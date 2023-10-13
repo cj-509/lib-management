@@ -1,0 +1,2 @@
+1) conecting mysql with visual studio: https://www.youtube.com/watch?v=a_W4zt5sR1M
+2) https://stackoverflow.com/questions/16291623/operator-overloading-c-too-many-parameters-for-operation
