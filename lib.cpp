@@ -1,10 +1,10 @@
 #include "lib.h"
 
 
-//  ___date class definition___
+//  __DATE CLASS DEFINITION__
 
 date::date(int y, int m, int d) : year(y), month(m), day(d) {}
-date::date() : year(1970), month(1), day(1) {}
+date::date() : year(0000), month(0), day(0) {}
 
 int date::getYear() {
 	return year;
@@ -26,7 +26,7 @@ date date::operator-(const date& other) const {
 	int diffYear = year - other.year;
 	int diffMonth = month - other.month;
 	int diffDay = day - other.day;
-
+	/*
 	if (diffDay < 0) {
 		diffMonth--;
 		int dayInPrevMonth = getDaysInMonth(other.year, other.month);
@@ -36,7 +36,26 @@ date date::operator-(const date& other) const {
 		diffYear--;
 		diffMonth += 12;
 	}
-	return date(diffYear, diffMonth, diffDay);
+	*/
+	return date(abs(diffYear), abs(diffMonth), abs(diffDay));
+}
+
+
+date date::operator+(const date& other) const {
+	int newYear = year + other.year;
+	int newMonth = month + other.month;
+	int newDay = day + other.day;
+
+	while (newDay > getDaysInMonth(newYear, newMonth)) {
+		newDay -= getDaysInMonth(newYear, newMonth);
+		++newMonth;
+
+		if (newMonth > 12) {
+			newMonth -= 12;
+			++newYear;
+		}
+		return date(newYear, newMonth, newDay);
+	}
 }
 
 //defining leap year
@@ -46,16 +65,50 @@ bool date::isLeapYear(int year) const {
 
 //defining days in month funcion
 int date::getDaysInMonth(int year, int month) const {
-	switch (month) {
-	case 1: case 3: case 5: case 7: case 8: case 10: case 12:
-		return 31;
-
-	case 2:
-		if (isLeapYear(year))
-			return 29;
-		else
-			return 28;
-	default:
-		return -1; //invalid month
+	if (month == 2) {
+		return isLeapYear(year) ? 29 : 28;
 	}
+	else if (month == 4 || month == 6 || month == 9 || month == 11) {
+		return 30;
+	}
+	else {
+		return 31;
+	}
+}
+
+//__BOOK CLASS DEFINITIONst__
+book::book() {}
+book::book(std::string t, std::string a, std::string g, std::string l, std::string i, int p,  int n) : title(t), author(a), genre(g), language(l), publicationYear(p), isbn(i), numPages(n) {}
+
+string book::getTitle() {
+	return title;
+}
+string book::getAuthor() {
+	return author;
+}
+string book::getGenre() {
+	return genre;
+}
+string book::getLanguage() {
+	return language;
+}
+string book::getIsbn(){
+	return isbn;
+}
+int book::getPublicationYear() {
+	return publicationYear;
+}
+int book::getNumPages() {
+	return numPages;
+}
+
+//display book
+std::ostream& operator<<(std::ostream& os, book& b) {
+	os << "Title: " << b.getTitle() << std::endl;
+	os << "Author: " << b.getAuthor() << std::endl;
+	os << "Genre: " << b.getGenre() << std::endl;
+	os << "Language: " << b.getLanguage() << std::endl;
+	os << "ISBN: " << b.getIsbn() << std::endl;
+	os << "Published: " << b.getPublicationYear() << std::endl;
+	os <<"Pages: " << b.getNumPages() << std::endl;
 }
