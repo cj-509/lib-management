@@ -80,19 +80,19 @@ int date::getDaysInMonth(int year, int month) const {
 book::book() {}
 book::book(std::string t, std::string a, std::string g, std::string l, std::string i, int p,  int n) : title(t), author(a), genre(g), language(l), publicationYear(p), isbn(i), numPages(n) {}
 
-string book::getTitle() {
+std::string book::getTitle() {
 	return title;
 }
-string book::getAuthor() {
+std::string book::getAuthor() {
 	return author;
 }
-string book::getGenre() {
+std::string book::getGenre() {
 	return genre;
 }
-string book::getLanguage() {
+std::string book::getLanguage() {
 	return language;
 }
-string book::getIsbn(){
+std::string book::getIsbn() {
 	return isbn;
 }
 int book::getPublicationYear() {
@@ -101,14 +101,37 @@ int book::getPublicationYear() {
 int book::getNumPages() {
 	return numPages;
 }
+void book::createBook() {
+	std::cout << "Enter Book's name: ";
+	std::getline(std::cin, title);
+
+	std::cout << "Enter Author's name: ";
+	std::getline(std::cin, author);
+
+	std::cout << "Enter Book's genre: ";
+	std::getline(std::cin, genre);
+
+	std::cout << "Enter: Book's language: ";
+	std::getline(std::cin, language);
+
+	std::cout << "Enter Book's ISBN: ";
+	std::getline(std::cin, isbn);
+
+	std::cout << "Enter Publication Year: ";
+	std::cin >> publicationYear;
+
+	std::cout << "Enter Number of pages: ";
+	std::cin >> numPages;
+}
 
 //display book
 std::ostream& operator<<(std::ostream& os, book& b) {
-	os << "Title: " << b.getTitle() << std::endl;
-	os << "Author: " << b.getAuthor() << std::endl;
-	os << "Genre: " << b.getGenre() << std::endl;
-	os << "Language: " << b.getLanguage() << std::endl;
-	os << "ISBN: " << b.getIsbn() << std::endl;
-	os << "Published: " << b.getPublicationYear() << std::endl;
-	os <<"Pages: " << b.getNumPages() << std::endl;
+	os << "Title: " << b.title << std::endl;
+	os << "Author: " << b.author << std::endl;
+	os << "Genre: " << b.genre << std::endl;
+	os << "Language: " << b.language << std::endl;
+	os << "ISBN: " << b.isbn << std::endl;
+	os << "Published: " << b.publicationYear << std::endl;
+	os <<"Pages: " << b.numPages << std::endl;
+	return os;
 }
