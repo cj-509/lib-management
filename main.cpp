@@ -1,6 +1,14 @@
-#include "lib.h"
+//#include "lib.h"
+#include "database.h"
+
 
 int main() {
+	database db("root", "password");
+
+	std::string dbname = "test";
+	db.createdb(dbname);
+	db.createTable("students", "VARCHAR name");
+	/*
 	date last(2022, 10, 1 );
 	date today(1, 5, 32);
 
@@ -11,6 +19,7 @@ int main() {
 
 	book b1("The Psychology of Money", "Morgan Housel", "Finance", "English", "97885719689", 2020, 241);
 	std::cout << b1 << std::endl;
+	*/
 	system("pause");
 	return 0;
 	
