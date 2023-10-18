@@ -35,6 +35,12 @@ void database::createTable(const std::string& tableName, const std::string& fiel
 		std::cout << "Table " << tableName << " already exists" << std::endl;
 	}
 }
+
+void database::insertIntoDb(std::string& tableName) {
+	std::string name;
+	
+
+}
 bool database::tableExits(const std::string& tableName) {
 	sql::Statement* stmt = con->createStatement();
 	sql::ResultSet* res = stmt->executeQuery("SHOW TABLES like '" + tableName + "'");

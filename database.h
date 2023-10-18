@@ -6,8 +6,7 @@
 #include<cppconn/resultset.h>
 #include <cppconn/exception.h>
 #include <cppconn/statement.h>
-#include <iostream>
-#include<string>
+#include "lib.h"
 
 class database {
 	private:
@@ -21,7 +20,7 @@ class database {
 		void usedb(std::string& dbname);
 		void updatedb();
 		void createTable(const std::string& tableName, const std::string& fields);
-		void insertIntoDb();
+		void insertIntoDb(std::string& tableName);
 		bool tableExits(const std::string& tableName);
 };
 
