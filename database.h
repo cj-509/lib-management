@@ -7,6 +7,7 @@
 #include <cppconn/exception.h>
 #include <cppconn/statement.h>
 #include "lib.h"
+#include <typeinfo> // for type checking
 
 class database {
 	private:
