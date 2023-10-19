@@ -24,12 +24,20 @@ void database::usedb(std::string& dbname) {
 
 	delete stmt;
 }
+
+void database::updatedb(const std::string& tableName) {
+	if(tableExits(tableName)) {
+		sql::Statement* stmt = con->createStatement();
+	}
+}
+
 void database::createTable(const std::string& tableName, const std::string& fields) {
 	if (!tableExits(tableName)) {
 		sql::Statement* stmt = con->createStatement();
 		stmt->execute("CREATE TABLE " + tableName + "(" + fields + ")");
 
 		std::cout << "Table has been created successfully" << std::endl;
+		delete stmt;
 	}
 	else {
 		std::cout << "Table " << tableName << " already exists" << std::endl;

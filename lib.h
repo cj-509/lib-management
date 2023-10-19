@@ -1,6 +1,6 @@
 #ifndef LIB_H
 #define LIB_H
-#include <cmath>
+#include <cmath> // using abs function to convert negative date result
 #include <iostream>
 #include <string>
 
@@ -23,6 +23,11 @@ class date {
 		//constructor
 		date(int, int, int);
 		date();
+
+		//setter function
+		int setYear(int);
+		int setMonth(int);
+		int setDay(int);
 
 		//getter function
 		int getYear();
@@ -89,14 +94,29 @@ class student{
 		std::string name;
 		std::string homeTown;
 		date enrollmentDate;
-		int admissionNo();
+		int admissionNo;
+		char accountType;
+	public:
+		student();
+		student(std::string name, std::string homeTown, date enrollmentDate, int admissionNo, char accountType);
+		char getAccountType();
+		
 
 };
 /*student class: Ends here*/
 
 
+/* Admin class: starts here*/
 class admin {
-	//for administrative user purposes
+private:
+	std::string username;
+	std::string password;
+	char accountType;
+public:
+	admin();
+	admin(std::string username, std::string password, char accountType);
+
+
 };
 #endif // LIB_H
 

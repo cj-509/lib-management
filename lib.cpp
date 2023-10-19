@@ -6,6 +6,17 @@
 date::date(int y, int m, int d) : year(y), month(m), day(d) {}
 date::date() : year(0000), month(0), day(0) {}
 
+int date::setYear(int yyyy) {
+	yyyy = year;
+}
+int date::setMonth(int mm) {
+	mm = month;
+}
+int date::setDay(int dd) {
+	dd = day;
+}
+
+
 int date::getYear() {
 	return year;
 }
@@ -135,3 +146,21 @@ std::ostream& operator<<(std::ostream& os, book& b) {
 	os <<"Pages: " << b.numPages << std::endl;
 	return os;
 }
+
+
+/* __STUDENT CLASS DEFINITION__*/
+
+student::student() {};
+student::student(std::string name, std::string homeTown, date enrollmentDate, int admissionNo, char accountType) : 
+	name(name), homeTown(homeTown), enrollmentDate(enrollmentDate), admissionNo(admissionNo), accountType(accountType) {}
+
+char student::getAccountType() {
+	return accountType;
+}
+
+
+
+
+/* __ADMIN CLASS DEFINITION__*/
+admin::admin() {}
+admin::admin(std::string username, std::string password, char accountType) : username(username), password(password), accountType(accountType) {}
