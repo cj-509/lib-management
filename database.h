@@ -20,7 +20,7 @@ class database {
 		void createdb(std::string& dbname);
 		void usedb(std::string& dbname);
 		void updatedb(const std::string& tableNmame);
-		void createTable(const std::string& tableName, const std::string& fields);
+		std::string createTable(const std::string& tableName, const std::string& fields);
 		void insertIntoDb(std::string& tableName);
 		bool tableExits(const std::string& tableName);
 };

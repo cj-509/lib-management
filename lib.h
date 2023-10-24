@@ -4,12 +4,6 @@
 #include <iostream>
 #include <string>
 
-
-namespace userlog {
-	//MySQL user loging info
-	std::string username = "root";
-	std::string password = "Password";
-}
 /*Date class
 					for doing simple date manipulation
 */
@@ -100,6 +94,7 @@ class student{
 		student();
 		student(std::string name, std::string homeTown, date enrollmentDate, int admissionNo, char accountType);
 		char getAccountType();
+		friend std::ostream& operator<<(std::ostream& os, student& s);
 		
 
 };

@@ -31,17 +31,17 @@ void database::updatedb(const std::string& tableName) {
 	}
 }
 
-void database::createTable(const std::string& tableName, const std::string& fields) {
+std::string database::createTable(const std::string& tableName, const std::string& fields) {
 	if (!tableExits(tableName)) {
 		sql::Statement* stmt = con->createStatement();
 		stmt->execute("CREATE TABLE " + tableName + "(" + fields + ")");
 
-		std::cout << "Table has been created successfully" << std::endl;
 		delete stmt;
+		return "Table has been created successfully";
+		//delete stmt;
 	}
-	else {
-		std::cout << "Table " << tableName << " already exists" << std::endl;
-	}
+	return "Table " + tableName + " already exists";
+
 }
 
 void database::insertIntoDb(std::string& tableName) {

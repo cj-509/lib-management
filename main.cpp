@@ -1,11 +1,15 @@
 //#include "lib.h"
 #include "database.h"
 #include <cstdlib>
+#include <stdexcept>
 using std::cout;
 using std::cin;
+using std::endl;
 using std::getline;
 using std::string;
 
+#define username "root"
+#define password "password"
 
 int randomN();
 
@@ -63,48 +67,58 @@ void createAccount() {
 	cout << "1. Student\n2. Admin" << std::endl;
 	cout << "What type of account would you like to create: ";
 	cin >> choice;
-	switch (choice) {
-	case 1:
-		string name;
-		string home_town;
-		date enrollment_date;
-		int admission_no = randomN();
-		//student(std::string name, std::string homeTown, date enrollmentDate, int admissionNo, char accountType);
+	if (choice == 1) {
+	
+		try { //using try and except to control whether the has been created already
 
-		cout << "Enter your Name: ";
-		getline(cin, name);
+			string name;
+			string home_town;
+			date enrollment_date;
+			int admission_no = randomN();
+			//student(std::string name, std::string homeTown, date enrollmentDate, int admissionNo, char accountType);
 
-
-		cout << "Enter your Home Town: ";
-		getline(cin, home_town);
+			cout << "Enter your Name: ";
+			getline(cin, name);
 
 
-		cout << "Enter your date of enrollment YYYY-MM-DD\n";
-		cout << "YYYY: "; int year; cin >> year;
-		enrollment_date.setYear(year);
-
-		cout << "Enter your date of enrollment\n";
-		cout << "MM: "; int month; cin >> month;
-		enrollment_date.setMonth(month);
-
-		cout << "Enter your date of enrollment\n";
-		cout << "DD: "; int day; cin >> day;
-		enrollment_date.setDay(day);
-
-		student st(name, home_town, enrollment_date, admission_no, 'S');
-		cout << st << endl;
-		
-		
-		
+			cout << "Enter your Home Town: ";
+			getline(cin, home_town);
 
 
-		
-		break;
-	case 2:
-		//admin(std::string username, std::string password, char accountType)
+			cout << "Enter your date of enrollment YYYY-MM-DD\n";
+			cout << "YYYY: "; int year; cin >> year;
+			enrollment_date.setYear(year);
 
+			cout << "Enter your date of enrollment\n";
+			cout << "MM: "; int month; cin >> month;
+			enrollment_date.setMonth(month);
+
+			cout << "Enter your date of enrollment\n";
+			cout << "DD: "; int day; cin >> day;
+			enrollment_date.setDay(day);
+
+			student st(name, home_town, enrollment_date, admission_no, 'S');
+			cout << st << endl;
+
+			string table_name = "Students";
+			string student_fiels = " Id PRIMARY KEY, name VARCHAR(255) NOT NULL, home_town VARCHAR(255), enrollment_date DATE,  account_type VARCHAR(1)";
+
+			string table_error = "Table " + table_name + " already exists";
+			database db(username, password);
+			string db_createtb = db.createTable(table_name, student_fiels);
+			
+			if (db_createtb == table_error) {
+				//db.insertIntoDb(table_name,)
+			}
+		}
+		catch (std::exception& e) {
+			std::cerr << "Unknown exception" << endl;
+		}
 	}
-
+	else if (choice == 2) {
+		//admin(std::string username, std::string password, char accountType)
+	
+		}
 
 }
 void login();
