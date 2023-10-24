@@ -1,7 +1,7 @@
 #include "database.h"
 
 
-database::database(std::string username, std::string password) {
+database::database(string username,string password) {
 	driver = sql::mysql::get_driver_instance();
 	con = driver->connect("tcp:: //127.0.0.1:3306", username, password);
 	//con->setSchema(schema);
@@ -11,27 +11,27 @@ database::~database() {
 	delete con;
 }
 
-void database::createdb(std::string& dbname) {
+void database::createdb(string& dbname) {
 	sql::Statement* stmt = con->createStatement();
 	stmt->execute("CREATE DATABASE IF NOT EXISTS " + dbname);
 
 	delete stmt;
 }
 
-void database::usedb(std::string& dbname) {
+void database::usedb(string& dbname) {
 	sql::Statement* stmt = con->createStatement();
 	stmt->execute("USE " + dbname);
 
 	delete stmt;
 }
 
-void database::updatedb(const std::string& tableName) {
+void database::updatedb(const string& tableName) {
 	if(tableExits(tableName)) {
 		sql::Statement* stmt = con->createStatement();
 	}
 }
 
-std::string database::createTable(const std::string& tableName, const std::string& fields) {
+string database::createTable(const string& tableName, const string& fields) {
 	if (!tableExits(tableName)) {
 		sql::Statement* stmt = con->createStatement();
 		stmt->execute("CREATE TABLE " + tableName + "(" + fields + ")");
@@ -44,12 +44,15 @@ std::string database::createTable(const std::string& tableName, const std::strin
 
 }
 
-void database::insertIntoDb(std::string& tableName) {
-	std::string name;
+void database::insertIntoDb(string& tableName, string column, string values) {
+	if (tableExits(tableName)) {
+		sql::Statement* stmt = con->createStatement();
+		stmt->execute("INSERT INTO " + tableName + "(" + column + ")" + "VALUES " + "(" + values + ")");
+	}
 	
 
 }
-bool database::tableExits(const std::string& tableName) {
+bool database::tableExits(const string& tableName) {
 	sql::Statement* stmt = con->createStatement();
 	sql::ResultSet* res = stmt->executeQuery("SHOW TABLES like '" + tableName + "'");
 	bool exists = res->next();

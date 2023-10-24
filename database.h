@@ -14,15 +14,15 @@ class database {
 		sql::mysql::MySQL_Driver* driver;
 		sql::Connection* con;
 	public:
-		database(std::string username, std::string password);
+		database(string username, string password);
 		~database();
 
-		void createdb(std::string& dbname);
-		void usedb(std::string& dbname);
-		void updatedb(const std::string& tableNmame);
-		std::string createTable(const std::string& tableName, const std::string& fields);
-		void insertIntoDb(std::string& tableName);
-		bool tableExits(const std::string& tableName);
+		void createdb(string& dbname);
+		void usedb(string& dbname);
+		void updatedb(const string& tableNmame);
+		std::string createTable(const string& tableName, const string& fields);
+		void insertIntoDb(string& tableName,string column, string values);
+		bool tableExits(const string& tableName);
 };
 
 

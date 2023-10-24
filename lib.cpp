@@ -27,6 +27,9 @@ int date::getDay() {
 	return day;
 }
 
+string date::to_str() const {
+	return to_string(year) + "-" + to_string(month) + "-" + to_string(day);
+}
 //display date obeject definition
 std::ostream& operator<<(std::ostream& os, date& d) {
 	os << d.getYear() << "-" << d.getMonth() << "-" << d.getDay() << std::endl;
@@ -89,21 +92,21 @@ int date::getDaysInMonth(int year, int month) const {
 
 //__BOOK CLASS DEFINITIONst__
 book::book() {}
-book::book(std::string t, std::string a, std::string g, std::string l, std::string i, int p,  int n) : title(t), author(a), genre(g), language(l), publicationYear(p), isbn(i), numPages(n) {}
+book::book(string t, string a, string g, string l, string i, int p,  int n) : title(t), author(a), genre(g), language(l), publicationYear(p), isbn(i), numPages(n) {}
 
-std::string book::getTitle() {
+string book::getTitle() {
 	return title;
 }
-std::string book::getAuthor() {
+string book::getAuthor() {
 	return author;
 }
-std::string book::getGenre() {
+string book::getGenre() {
 	return genre;
 }
-std::string book::getLanguage() {
+string book::getLanguage() {
 	return language;
 }
-std::string book::getIsbn() {
+string book::getIsbn() {
 	return isbn;
 }
 int book::getPublicationYear() {
@@ -151,8 +154,8 @@ std::ostream& operator<<(std::ostream& os, book& b) {
 /* __STUDENT CLASS DEFINITION__*/
 
 student::student() {};
-student::student(std::string name, std::string homeTown, date enrollmentDate, int admissionNo, char accountType) : 
-	name(name), homeTown(homeTown), enrollmentDate(enrollmentDate), admissionNo(admissionNo), accountType(accountType) {}
+student::student(string name, string homeTown, date enrollmentDate, int id, char accountType) : 
+	name(name), homeTown(homeTown), enrollmentDate(enrollmentDate), id(id), accountType(accountType) {}
 
 char student::getAccountType() {
 	return accountType;
@@ -163,4 +166,4 @@ char student::getAccountType() {
 
 /* __ADMIN CLASS DEFINITION__*/
 admin::admin() {}
-admin::admin(std::string username, std::string password, char accountType) : username(username), password(password), accountType(accountType) {}
+admin::admin(string username, string password, char accountType) : username(username), password(password), accountType(accountType) {}

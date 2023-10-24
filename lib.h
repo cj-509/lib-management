@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+using std::to_string;
+using std::string;
 /*Date class
 					for doing simple date manipulation
 */
@@ -28,6 +30,8 @@ class date {
 		int getMonth();
 		int getDay();
 
+		string to_str() const;
+
 		//display date object
 		friend std::ostream& operator<<(std::ostream& os, date& d);
 
@@ -50,23 +54,23 @@ class date {
 /*Start of book class*/
 class book {
 	private:
-		std::string title;
-		std::string author;
-		std::string genre;
-		std::string language;
-		std::string isbn;
+		string title;
+		string author;
+		string genre;
+		string language;
+		string isbn;
 		int publicationYear;
 		int numPages;
 	public:
 		book();
-		book(std::string, std::string, std::string, std::string, std::string, int, int);
+		book(string, string, string, string, string, int, int);
 
 		//getter functions
-		std::string getTitle();
-		std::string getAuthor();
-		std::string getGenre();
-		std::string getLanguage();
-		std::string getIsbn();
+		string getTitle();
+		string getAuthor();
+		string getGenre();
+		string getLanguage();
+		string getIsbn();
 		int getPublicationYear();
 		int getNumPages();
 
@@ -85,14 +89,14 @@ class book {
 /*student class: beings here*/
 class student{
 	private:
-		std::string name;
-		std::string homeTown;
+		string name;
+		string homeTown;
 		date enrollmentDate;
-		int admissionNo;
+		int id;
 		char accountType;
 	public:
 		student();
-		student(std::string name, std::string homeTown, date enrollmentDate, int admissionNo, char accountType);
+		student(string name, string homeTown, date enrollmentDate, int id, char accountType);
 		char getAccountType();
 		friend std::ostream& operator<<(std::ostream& os, student& s);
 		
@@ -104,12 +108,12 @@ class student{
 /* Admin class: starts here*/
 class admin {
 private:
-	std::string username;
-	std::string password;
+	string username;
+	string password;
 	char accountType;
 public:
 	admin();
-	admin(std::string username, std::string password, char accountType);
+	admin(string username, string password, char accountType);
 
 
 };
