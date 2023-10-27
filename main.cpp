@@ -11,6 +11,7 @@ using std::getline;
 #define username "root"
 #define password "password"
 
+database db(username, password);
 int randomN();
 
 //user management
@@ -88,16 +89,16 @@ void createAccount() {
 			//create & insertion values
 			string table_name = "Students";
 			string student_fiels = "name VARCHAR(255) NOT NULL, home_town VARCHAR(255), enrollment_date DATE, Id PRIMARY KEY, account_type VARCHAR(1)";
-			string column = "name, home_town, enrollment_date, Id, account_type";
+			string student_column = "name, home_town, enrollment_date, Id, account_type";
 			string values = name + ", " + home_town + ", " + enrollment_date.to_str() + ", " + to_string(id) + ", " + to_string(account_type);
 
 			string table_error = "Table " + table_name + " already exists";
-			database db(username, password);
+			//database db(username, password);
 			string db_createtb = db.createTable(table_name, student_fiels);
 			
 
 			if (db_createtb == table_error) {
-				db.insertIntoDb(table_name, column, values);
+				db.insertIntoDb(table_name, student_column, values);
 			}
 		}
 		catch (std::exception& e) {
@@ -105,18 +106,40 @@ void createAccount() {
 		}
 	}
 	else if (choice == 2) {
-		//admin(std::string username, std::string password, char accountType)
-		string admin_username;
-		string admin_password;
-		char admin_acc_type = 'A';
+		try {
+			//admin(std::string username, std::string password, char accountType)
+			string admin_name;
+			string admin_username;
+			string admin_password;
+			date admin_dob;
+			char admin_acc_type = 'A';
 
-		cout << "Enter your username: ";
-		getline(cin, admin_username);
+			cout << "Enter your name: ";
+			getline(cin, admin_name);
 
-		cout << "Enter your password: ";
-		getline(cin, admin_password);
+			cout << "Enter your DOB YYYY-MM-DD \n";
+			cout << "YYYY: "; int year; cin >> year;
+			admin_dob.setYear(year);
 
-		admin ad(admin_username, admin_password, admin_acc_type);
+			cout << "MM: "; int month; cin >> month;
+			admin_dob.setMonth(month);
+
+			cout << "DD: "; int day; cin >> day;
+			admin_dob.setDay(day);
+
+			cout << "Enter your username: ";
+			getline(cin, admin_username);
+
+			cout << "Enter your password: ";
+			getline(cin, admin_password);
+
+			admin ad(admin_name, admin_username, admin_password, admin_dob, admin_acc_type);
+
+			string admin_tablename = "admin_users";
+		}
+		catch (std::exception& e) {
+			std::cerr << e.what() << endl;
+		}
 	}
 
 }

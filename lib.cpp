@@ -166,4 +166,4 @@ char student::getAccountType() {
 
 /* __ADMIN CLASS DEFINITION__*/
 admin::admin() {}
-admin::admin(string username, string password, char accountType) : username(username), password(password), accountType(accountType) {}
+admin::admin( string name, string username, string password, date DOB, char accountType) : name(name), username(username), password(password), DOB(DOB), accountType(accountType) {}

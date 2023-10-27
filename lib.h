@@ -108,12 +108,14 @@ class student{
 /* Admin class: starts here*/
 class admin {
 private:
+	string name;
 	string username;
 	string password;
+	date DOB;
 	char accountType;
 public:
 	admin();
-	admin(string username, string password, char accountType);
+	admin( string name, string username, string password, date DOB, char accountType);
 
 
 };
