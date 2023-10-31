@@ -6,13 +6,13 @@
 date::date(int y, int m, int d) : year(y), month(m), day(d) {}
 date::date() : year(0000), month(0), day(0) {}
 
-int date::setYear(int yyyy) {
+void date::setYear(int yyyy) {
 	yyyy = year;
 }
-int date::setMonth(int mm) {
+void date::setMonth(int mm) {
 	mm = month;
 }
-int date::setDay(int dd) {
+void date::setDay(int dd) {
 	dd = day;
 }
 
@@ -139,7 +139,7 @@ void book::createBook() {
 }
 
 //display book
-std::ostream& operator<<(std::ostream& os, book& b) {
+ostream& operator<<(std::ostream& os, book& b) {
 	os << "Title: " << b.title << std::endl;
 	os << "Author: " << b.author << std::endl;
 	os << "Genre: " << b.genre << std::endl;
@@ -156,6 +156,14 @@ std::ostream& operator<<(std::ostream& os, book& b) {
 student::student() {};
 student::student(string name, string homeTown, date enrollmentDate, int id, char accountType) : 
 	name(name), homeTown(homeTown), enrollmentDate(enrollmentDate), id(id), accountType(accountType) {}
+
+string student::getName() {
+	return name;
+}
+
+string student::getHomeTown() {
+	return homeTown;
+}
 
 char student::getAccountType() {
 	return accountType;

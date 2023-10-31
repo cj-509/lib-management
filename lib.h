@@ -6,6 +6,7 @@
 
 using std::to_string;
 using std::string;
+using std::ostream;
 /*Date class
 					for doing simple date manipulation
 */
@@ -21,9 +22,9 @@ class date {
 		date();
 
 		//setter function
-		int setYear(int);
-		int setMonth(int);
-		int setDay(int);
+		void setYear(int);
+		void setMonth(int);
+		void setDay(int);
 
 		//getter function
 		int getYear();
@@ -81,7 +82,7 @@ class book {
 
 
 		//display book
-		friend std::ostream& operator<<(std::ostream& os, book& b);
+		friend ostream& operator<<(ostream& os, book& b);
 
 };
 /*End of book class*/
@@ -97,8 +98,11 @@ class student{
 	public:
 		student();
 		student(string name, string homeTown, date enrollmentDate, int id, char accountType);
+		string getName();
+		string getHomeTown();
+		
 		char getAccountType();
-		friend std::ostream& operator<<(std::ostream& os, student& s);
+		//friend ostream& operator<<(ostream& ots, student& s);
 		
 
 };

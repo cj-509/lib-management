@@ -1,4 +1,4 @@
-//#include "lib.h"
+#include "lib.h"
 #include "database.h"
 #include <cstdlib>
 #include <stdexcept>
@@ -27,6 +27,7 @@ void deleteBook();
 
 
 int main() {
+	cout << "Hello World \n";
 	createAccount();
 	system("pause");
 	return 0;
@@ -84,12 +85,12 @@ void createAccount() {
 			enrollment_date.setDay(day);
 
 			student st(name, home_town, enrollment_date, id, account_type);
-			cout << st << endl;
+			//cout << st << endl;
 
 			//create & insertion values
 			string table_name = "Students";
 			string student_fiels = "name VARCHAR(255) NOT NULL, home_town VARCHAR(255), enrollment_date DATE, Id PRIMARY KEY, account_type VARCHAR(1)";
-			string student_column = "name, home_town, enrollment_date, Id, account_type";
+			
 			string values = name + ", " + home_town + ", " + enrollment_date.to_str() + ", " + to_string(id) + ", " + to_string(account_type);
 
 			string table_error = "Table " + table_name + " already exists";
@@ -98,11 +99,12 @@ void createAccount() {
 			
 
 			if (db_createtb == table_error) {
+				string student_column = "name, home_town, enrollment_date, Id, account_type"; // for inserting
 				db.insertIntoDb(table_name, student_column, values);
 			}
 		}
 		catch (std::exception& e) {
-			std::cerr << "Unknown exception" << endl;
+			std::cerr << e.what() << endl;
 		}
 	}
 	else if (choice == 2) {
@@ -136,12 +138,26 @@ void createAccount() {
 			admin ad(admin_name, admin_username, admin_password, admin_dob, admin_acc_type);
 
 			string admin_tablename = "admin_users";
+			string tb_error = "Table " + admin_tablename + " already exists";
+
+			string admin_fields = "name VARCHAR(255) NOT NULL, username VARCHAR(255) NOT NULL UNIQUE, password VARCHAR(255), dob DATE, account_type VARCHAR(1)";
+			string admin_values = admin_name + ", " + admin_username + ", " + admin_password + ", " + admin_dob.to_str() + to_string(admin_acc_type);
+
+			string admin_create_db = db.createTable(admin_name, admin_fields);
+
+
+			if (admin_create_db == tb_error) {
+				string admin_column = "name, username, password, dob, account_type";
+				db.insertIntoDb(admin_tablename, admin_fields, admin_values);
+			}
+
 		}
-		catch (std::exception& e) {
-			std::cerr << e.what() << endl;
+		catch (std::exception& ex) {
+			std::cerr << ex.what() << endl;
 		}
 	}
 
 }
+
 void login();
 void deleteStudent();
