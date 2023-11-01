@@ -27,9 +27,10 @@ void deleteBook();
 
 
 int main() {
-	cout << "Hello World \n";
-	createAccount();
-	system("pause");
+	date now(2023, 11, 01);
+	cout << now << endl;
+	//createAccount();
+	//system("pause");
 	return 0;
 	
 }
@@ -140,7 +141,7 @@ void createAccount() {
 			string admin_tablename = "admin_users";
 			string tb_error = "Table " + admin_tablename + " already exists";
 
-			string admin_fields = "name VARCHAR(255) NOT NULL, username VARCHAR(255) NOT NULL UNIQUE, password VARCHAR(255), dob DATE, account_type VARCHAR(1)";
+			string admin_fields = "name VARCHAR(255) NOT NULL, username VARCHAR(255) NOT NULL UNIQUE PRIMARY KEY, password VARCHAR(255), dob DATE, account_type VARCHAR(1)";
 			string admin_values = admin_name + ", " + admin_username + ", " + admin_password + ", " + admin_dob.to_str() + to_string(admin_acc_type);
 
 			string admin_create_db = db.createTable(admin_name, admin_fields);

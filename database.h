@@ -14,7 +14,7 @@ class database {
 		sql::mysql::MySQL_Driver* driver;
 		sql::Connection* con;
 	public:
-		database(string username, string password);
+		database(const string username, const string password);
 		~database();
 
 		void createdb(string& dbname);
