@@ -5,7 +5,7 @@ database::database() {}
 
 database::database(const string username,const string password, const string schema) {
 	try {
-		driver = sql::mysql::get_driver_instance();
+		driver = get_driver_instance();
 		con = driver->connect("tcp:: //127.0.0.1:3306", username, password);
 		con->setSchema(schema);
 	}

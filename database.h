@@ -2,6 +2,7 @@
 #define DATABASE_H
 #include <mysql_connection.h>
 #include <mysql_driver.h>
+#include <mysql_connection.h>
 #include <cppconn/driver.h>
 #include<cppconn/resultset.h>
 #include <cppconn/exception.h>
@@ -11,7 +12,7 @@
 
 class database {
 	private:
-		sql::mysql::MySQL_Driver* driver;
+		sql::Driver* driver;
 		sql::Connection* con;
 	public:
 		database();
