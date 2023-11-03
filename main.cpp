@@ -102,15 +102,14 @@ void createAccount() {
 			string table_name = "Students";
 			string student_fiels = "name VARCHAR(255) NOT NULL, home_town VARCHAR(255), enrollment_date DATE, Id INT PRIMARY KEY, account_type VARCHAR";
 
-			string values = name + " " + home_town + ", " + enrollment_date.to_str() + ", " + to_string(id) + ", " + to_string(account_type);
-
-			//string table_error = "Table " + table_name + " already exists";
+			string values = "INSERT INTO " + table_name + " (name, home_town, enrollment_date, Id, account_type) VALUES('" + name + "','" + home_town + "','" + enrollment_date.to_str() + "','" + to_string(id) + "','" + account_type + "')";
+	
 			
 			string db_createtb = db.createTable(table_name, student_fiels);
 
 	
-			string student_column = "name, home_town, enrollment_date, Id, account_type"; // for inserting
-			db.insertIntoDatabase("INSERT INTO Students (name, home_town, enrollment_date, Id, account_type) VALUES('" + name + "','" + home_town + "','" + enrollment_date.to_str() + "','" + to_string(id) + "','" + account_type + "')");
+			
+			db.insertIntoDatabase(values);
 			
 		}
 		catch (std::exception& e) {
