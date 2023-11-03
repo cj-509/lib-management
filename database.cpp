@@ -1,11 +1,13 @@
 #include "database.h"
 
 
-database::database(const string username,const string password) {
+database::database() {}
+
+database::database(const string username,const string password, const string schema) {
 	try {
 		driver = sql::mysql::get_driver_instance();
 		con = driver->connect("tcp:: //127.0.0.1:3306", username, password);
-		//con->setSchema(schema);
+		con->setSchema(schema);
 	}
 	catch (sql::SQLException& e) {
 		std::cerr << "Error connecting to MYSQL: " << e.what() << std::endl;
@@ -16,21 +18,26 @@ database::~database() {
 	delete con;
 }
 
-void database::createdb(string& dbname) {
+void database::createDatabase(string& dbname) {
 	sql::Statement* stmt = con->createStatement();
 	stmt->execute("CREATE DATABASE IF NOT EXISTS " + dbname);
 
 	delete stmt;
 }
 
-void database::usedb(string& dbname) {
-	sql::Statement* stmt = con->createStatement();
-	stmt->execute("USE " + dbname);
+void database::useDatabase(string& dbname) {
+	try {
+		sql::Statement* stmt = con->createStatement();
+		stmt->execute("USE " + dbname);
 
-	delete stmt;
+		delete stmt;
+	}
+	catch (sql::SQLException& e) {
+		std::cerr << e.what() << std::endl;
+	}
 }
 
-void database::updatedb(const string& tableName) {
+void database::updateDatabase(const string& tableName) {
 	if(tableExits(tableName)) {
 		sql::Statement* stmt = con->createStatement();
 	}
@@ -54,7 +61,7 @@ string database::createTable(const string& tableName, const string& fields) {
 
 }
 
-void database::insertIntoDb(string& tableName, string column, string values) {
+void database::insertIntoDatabase(string& tableName, string column, string values) {
 	if (tableExits(tableName)) {
 		try {
 			sql::Statement* stmt = con->createStatement();

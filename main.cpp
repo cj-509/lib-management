@@ -10,8 +10,11 @@ using std::getline;
 
 #define username "root"
 #define password "password"
+#define schema "library"
 
-database db(username, password);
+database db(username, password, schema);
+
+
 int randomN();
 
 //user management
@@ -27,13 +30,14 @@ void deleteBook();
 
 
 int main() {
-	date now(2023, 11, 01);
-	cout << now << endl;
-	//createAccount();
-	//system("pause");
+	//string nn = "library";
+	//db.useDatabase(nn);
+	//system("mysql -u root -p");
+
 	return 0;
 	
 }
+
 
 int randomN() {
 	int length = 7; // specify the random number lenght
@@ -101,7 +105,7 @@ void createAccount() {
 
 			if (db_createtb == table_error) {
 				string student_column = "name, home_town, enrollment_date, Id, account_type"; // for inserting
-				db.insertIntoDb(table_name, student_column, values);
+				db.insertIntoDatabase(table_name, student_column, values);
 			}
 		}
 		catch (std::exception& e) {
@@ -149,7 +153,7 @@ void createAccount() {
 
 			if (admin_create_db == tb_error) {
 				string admin_column = "name, username, password, dob, account_type";
-				db.insertIntoDb(admin_tablename, admin_fields, admin_values);
+				db.insertIntoDatabase(admin_tablename, admin_fields, admin_values);
 			}
 
 		}
