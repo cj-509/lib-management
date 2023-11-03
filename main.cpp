@@ -11,8 +11,9 @@ using std::getline;
 #define username "root"
 #define password "password"
 #define schema "library"
+#define host "tcp://127.0.0.1:3306"
 
-database db(username, password, schema);
+database db(host, username, password, schema);
 
 
 int randomN();
@@ -30,12 +31,13 @@ void deleteBook();
 
 
 int main() {
+	createAccount();
 	//string nn = "library";
 	//db.useDatabase(nn);
 	//system("mysql -u root -p");
 
 	return 0;
-	
+
 }
 
 
@@ -46,7 +48,7 @@ int randomN() {
 
 	srand((unsigned)time(NULL));
 	int random_number = lower_bound + (rand() % upper_bound);
-	
+
 
 
 	return random_number;
@@ -54,21 +56,24 @@ int randomN() {
 
 void createAccount() {
 	int choice;
-	
+
 	cout << "1. Student\n2. Admin" << std::endl;
 	cout << "What type of account would you like to create: ";
 	cin >> choice;
+
+	std::cin.ignore(); // clear input buffer
+
 	if (choice == 1) {
-	
-		try { //using try and except to control whether the has been created already
+
+		try { 
 
 			string name;
 			string home_town;
 			date enrollment_date;
 			int id = randomN();
 			char account_type = 'S';
-			//student(std::string name, std::string homeTown, date enrollmentDate, int admissionNo, char accountType);
-
+			
+			// getting user data
 			cout << "Enter your Name: ";
 			getline(cin, name);
 
@@ -76,37 +81,37 @@ void createAccount() {
 			cout << "Enter your Home Town: ";
 			getline(cin, home_town);
 
-
-			cout << "Enter your date of enrollment YYYY-MM-DD\n";
-			cout << "YYYY: "; int year; cin >> year;
+			cout << "Enter your enrollment  date (YYYY-MM-DD)\n";
+			cout << "YYYY: ";int year; cin >> year;
 			enrollment_date.setYear(year);
 
-			cout << "Enter your date of enrollment\n";
+			//cout << "Enter your date of enrollment\n";
 			cout << "MM: "; int month; cin >> month;
 			enrollment_date.setMonth(month);
 
-			cout << "Enter your date of enrollment\n";
+			//cout << "Enter your date of enrollment\n";
 			cout << "DD: "; int day; cin >> day;
 			enrollment_date.setDay(day);
+
+	
 
 			student st(name, home_town, enrollment_date, id, account_type);
 			//cout << st << endl;
 
 			//create & insertion values
 			string table_name = "Students";
-			string student_fiels = "name VARCHAR(255) NOT NULL, home_town VARCHAR(255), enrollment_date DATE, Id PRIMARY KEY, account_type VARCHAR(1)";
-			
-			string values = name + ", " + home_town + ", " + enrollment_date.to_str() + ", " + to_string(id) + ", " + to_string(account_type);
+			string student_fiels = "name VARCHAR(255) NOT NULL, home_town VARCHAR(255), enrollment_date DATE, Id INT PRIMARY KEY, account_type VARCHAR";
 
-			string table_error = "Table " + table_name + " already exists";
-			//database db(username, password);
+			string values = name + " " + home_town + ", " + enrollment_date.to_str() + ", " + to_string(id) + ", " + to_string(account_type);
+
+			//string table_error = "Table " + table_name + " already exists";
+			
 			string db_createtb = db.createTable(table_name, student_fiels);
-			
 
-			if (db_createtb == table_error) {
-				string student_column = "name, home_town, enrollment_date, Id, account_type"; // for inserting
-				db.insertIntoDatabase(table_name, student_column, values);
-			}
+	
+			string student_column = "name, home_town, enrollment_date, Id, account_type"; // for inserting
+			db.insertIntoDatabase("INSERT INTO Students (name, home_town, enrollment_date, Id, account_type) VALUES('" + name + "','" + home_town + "','" + enrollment_date.to_str() + "','" + to_string(id) + "','" + account_type + "')");
+			
 		}
 		catch (std::exception& e) {
 			std::cerr << e.what() << endl;
@@ -114,31 +119,33 @@ void createAccount() {
 	}
 	else if (choice == 2) {
 		try {
-			//admin(std::string username, std::string password, char accountType)
+			
 			string admin_name;
 			string admin_username;
 			string admin_password;
 			date admin_dob;
 			char admin_acc_type = 'A';
 
+			int year; int month; int day;
 			cout << "Enter your name: ";
 			getline(cin, admin_name);
+			
 
-			cout << "Enter your DOB YYYY-MM-DD \n";
-			cout << "YYYY: "; int year; cin >> year;
+			cout << "Enter your DOB (YYYY-MM-DD) \n";
+			cout << "YYYY: "; cin >> year;
 			admin_dob.setYear(year);
 
-			cout << "MM: "; int month; cin >> month;
+			cout << "MM: "; cin >> month;
 			admin_dob.setMonth(month);
 
-			cout << "DD: "; int day; cin >> day;
+			cout << "DD: "; cin >> day;
 			admin_dob.setDay(day);
 
 			cout << "Enter your username: ";
-			getline(cin, admin_username);
+			cin >> admin_username;
 
 			cout << "Enter your password: ";
-			getline(cin, admin_password);
+			cin >> admin_password;
 
 			admin ad(admin_name, admin_username, admin_password, admin_dob, admin_acc_type);
 
@@ -153,7 +160,7 @@ void createAccount() {
 
 			if (admin_create_db == tb_error) {
 				string admin_column = "name, username, password, dob, account_type";
-				db.insertIntoDatabase(admin_tablename, admin_fields, admin_values);
+				//db.insertIntoDatabase(admin_tablename, admin_fields, admin_values);
 			}
 
 		}

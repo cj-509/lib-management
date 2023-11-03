@@ -3,14 +3,15 @@
 
 database::database() {}
 
-database::database(const string username,const string password, const string schema) {
+database::database(const string host, const string username,const string password, const string schema) {
 	try {
 		driver = get_driver_instance();
-		con = driver->connect("tcp:: //127.0.0.1:3306", username, password);
+		con = driver->connect(host, username, password);
 		con->setSchema(schema);
+		std::cout << "Connected successfully" << std::endl;
 	}
 	catch (sql::SQLException& e) {
-		std::cerr << "Error connecting to MYSQL: " << e.what() << std::endl;
+		std::cerr << "Error: " << e.what() << std::endl;
 	}
 }
 
@@ -61,21 +62,21 @@ string database::createTable(const string& tableName, const string& fields) {
 
 }
 
-void database::insertIntoDatabase(string& tableName, string column, string values) {
-	if (tableExits(tableName)) {
-		try {
-			sql::Statement* stmt = con->createStatement();
-			stmt->execute("INSERT INTO " + tableName + "(" + column + ")" + "VALUES " + "(" + values + ")");
+void database::insertIntoDatabase(string values) {
+	try {
+		sql::Statement* stmt = con->createStatement();
+		stmt->execute(values);
 
-			delete stmt;
-		}
-		catch (sql::SQLException& e) {
-			std::cerr << "Insertion Error: " << e.what() << std::endl;
-		}
+		delete stmt;
 	}
-	
+	catch (sql::SQLException& e) {
+		std::cerr << "Insertion Error: " << e.what() << std::endl;
+	}
 
 }
+	
+
+
 bool database::tableExits(const string& tableName) {
 	try {
 

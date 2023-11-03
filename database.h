@@ -16,14 +16,14 @@ class database {
 		sql::Connection* con;
 	public:
 		database();
-		database(const string username, const string password, const string schema);
+		database(const string host, const string username, const string password, const string schema);
 		~database();
 
 		void createDatabase(string& dbname);
 		void useDatabase(string& dbname);
 		void updateDatabase(const string& tableNmame);
 		std::string createTable(const string& tableName, const string& fields);
-		void insertIntoDatabase(string& tableName,string column, string values);
+		void insertIntoDatabase(string values);
 		bool tableExits(const string& tableName);
 };
 
