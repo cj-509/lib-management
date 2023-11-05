@@ -7,13 +7,13 @@ date::date(int y, int m, int d) : year(y), month(m), day(d) {}
 date::date() : year(0000), month(0), day(0) {}
 
 void date::setYear(int yyyy) {
-	yyyy = year;
+	year = yyyy;
 }
 void date::setMonth(int mm) {
-	mm = month;
+	month = mm;
 }
 void date::setDay(int dd) {
-	dd = day;
+	day = dd;
 }
 
 
@@ -28,7 +28,10 @@ int date::getDay() {
 }
 
 string date::to_str() const {
-	return to_string(year) + "-" + to_string(month) + "-" + to_string(day);
+	string formattedYear = to_string(year);
+	string formattedMonth = (month < 10) ? "0" + to_string(month) : to_string(month);
+	string formattedDay = (day < 10) ? "0" + to_string(day) : to_string(day);
+	return formattedYear + "-" + formattedMonth + "-" + formattedDay;
 }
 //display date obeject definition
 std::ostream& operator<<(std::ostream& os, date& d) {

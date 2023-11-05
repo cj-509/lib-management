@@ -45,21 +45,19 @@ void database::updateDatabase(const string& tableName) {
 }
 
 string database::createTable(const string& tableName, const string& fields) {
-	if (!tableExits(tableName)) {
-		try {
-			sql::Statement* stmt = con->createStatement();
-			stmt->execute("CREATE TABLE " + tableName + "(" + fields + ")");
+	try {
+		sql::Statement* stmt = con->createStatement();
+		stmt->execute("CREATE TABLE IF NOT EXISTS " + tableName + "(" + fields + ");");
 
-			delete stmt;
-			return "Table has been created successfully";
-			//delete stmt;
-		}
-		catch (sql::SQLException& e) {
-			std::cerr << "Error while creating table: " << e.what() << std::endl;
-		}
+		delete stmt;
+		return "Table has been created successfully";
+		//delete stmt;
 	}
-	return "Table " + tableName + " already exists";
+	catch (sql::SQLException& e) {
+		std::cerr << "Error while creating table: " << e.what() << std::endl;
+	}
 
+	return "Table " + tableName + " already exists";
 }
 
 void database::insertIntoDatabase(string values) {
