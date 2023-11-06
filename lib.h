@@ -64,7 +64,7 @@ class book {
 		int numPages;
 	public:
 		book();
-		book(string, string, string, string, string, int, int);
+		book(string title, string author, string genre, string language, string isbn, int publicationYear, int numpages);
 
 		//getter functions
 		string getTitle();

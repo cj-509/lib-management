@@ -20,11 +20,14 @@ int randomN();
 
 //user management
 void createAccount();
-void login();
+bool login();
 void deleteStudent();
+void viewStudents();
 
 
 //book management
+void createBook();
+void addBook();
 void searchBook();
 void modifyBook();
 void deleteBook();
@@ -168,5 +171,63 @@ void createAccount() {
 
 }
 
-void login();
+bool login();
 void deleteStudent();
+void viewStudents();
+
+void createBook() {
+	try {
+		string title;
+		string author;
+		string genre;
+		string language;
+		date publicationYear;
+		string isbn;
+		int numpages;
+
+		cout << "Enter the book's information below \n\n";
+		cout << "Title: ";
+		getline(cin, title);
+
+		cout << "Author: ";
+		getline(cin, author);
+
+		cout << "Genre: ";
+		getline(cin, genre);
+
+		cout << "Language: ";
+		getline(cin, language);
+
+		cout << "Pulication year (YYYY-MM-DD)\n";
+		cout << "YYYY: ";
+		int year; cin >> year;
+		publicationYear.setYear(year);
+
+		cout << "MM: ";
+		int month; cin >> month;
+		publicationYear.setMonth(month);
+
+		cout << "DD: ";
+		int day; cin >> day;
+		publicationYear.setDay(day);
+		
+		cout << "ISBN: ";
+		cin >> isbn;
+
+		cout << "Number of Pages: ";
+		cin >> numpages;
+		book b();
+		//(string title, string author, string genre, string language, string isbn, int publicationYear, int numpages)
+
+		string tableName = "book"; // book
+		string fields = "title VARCHAR(255) NOT NULL, author VARCHAR(255) NOT NULL, language VARCHAR(50), isbn VARCHAR(255) NOT NULL PRIMARY KEY, INT publication_year, INT num_pages NOT NULL";
+		string result = db.createTable(tableName, fields);
+
+		if (result == "Table has been created successfully" || result == "Table " + tableName + " already exists") {
+			string values = "INSERT INTO " + tableName +" (title, author, laguage, isbn, publication_year, num_pages) VALUES('" + title + "','" + author + "','" + language + "','" + isbn + "','" + publicationYear.to_str() + "','" + to_string(numpages) + "')";
+		}
+	}
+	catch (std::exception& e) {
+		std::cerr << e.what() << endl;
+		}
+}
