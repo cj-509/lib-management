@@ -31,14 +31,23 @@ void addBook();
 void searchBook();
 void modifyBook();
 void deleteBook();
+void viewBook(sql::Connection* con);
 
 
 int main() {
-	createAccount();
+	//createAccount();
 	//string nn = "library";
 	//db.useDatabase(nn);
 	//system("mysql -u root -p");
 
+	createBook();
+	char res;
+	cout << "Would you like to view the book:  (y/n)";
+	cin >> res;
+
+	if (res == 'y' || res == 'y') {
+		viewBook(db.getConnection());
+	}
 	return 0;
 
 }
@@ -51,8 +60,6 @@ int randomN() {
 
 	srand((unsigned)time(NULL));
 	int random_number = lower_bound + (rand() % upper_bound);
-
-
 
 	return random_number;
 }
@@ -181,9 +188,9 @@ void createBook() {
 		string author;
 		string genre;
 		string language;
-		date publicationYear;
+		date publicationDate;
 		string isbn;
-		int numpages;
+		int numPages;
 
 		cout << "Enter the book's information below \n\n";
 		cout << "Title: ";
@@ -201,33 +208,112 @@ void createBook() {
 		cout << "Pulication year (YYYY-MM-DD)\n";
 		cout << "YYYY: ";
 		int year; cin >> year;
-		publicationYear.setYear(year);
+		publicationDate.setYear(year);
 
 		cout << "MM: ";
 		int month; cin >> month;
-		publicationYear.setMonth(month);
+		publicationDate.setMonth(month);
 
 		cout << "DD: ";
 		int day; cin >> day;
-		publicationYear.setDay(day);
+		publicationDate.setDay(day);
 		
 		cout << "ISBN: ";
 		cin >> isbn;
 
 		cout << "Number of Pages: ";
-		cin >> numpages;
+		cin >> numPages;
 		book b();
-		//(string title, string author, string genre, string language, string isbn, int publicationYear, int numpages)
+		//(string title, string author, string genre, string language, string isbn, int publicationDate, int numpages)
 
-		string tableName = "book"; // book
-		string fields = "title VARCHAR(255) NOT NULL, author VARCHAR(255) NOT NULL, language VARCHAR(50), isbn VARCHAR(255) NOT NULL PRIMARY KEY, INT publication_year, INT num_pages NOT NULL";
+		string tableName = "books"; // books
+		string fields = tableName + "title VARCHAR(255) NOT NULL, author VARCHAR(255) NOT NULL, genre VARCHAR(255), language VARCHAR(50), isbn VARCHAR(255) NOT NULL PRIMARY KEY, publication_year INT, num_pages INT NOT NULL";
 		string result = db.createTable(tableName, fields);
 
 		if (result == "Table has been created successfully" || result == "Table " + tableName + " already exists") {
-			string values = "INSERT INTO " + tableName +" (title, author, laguage, isbn, publication_year, num_pages) VALUES('" + title + "','" + author + "','" + language + "','" + isbn + "','" + publicationYear.to_str() + "','" + to_string(numpages) + "')";
+			//string values = "INSERT INTO " + tableName + " (title, author, genre, laguage, isbn, publication_year, num_pages) VALUES('" + title + "','" + author + "','" + "," + genre + "," + language + "','" + isbn + "','" + publicationDate.to_str() + "','" + to_string(numPages) + "')";
+			string values = "INSERT INTO " + tableName + " (title, author, genre, language, isbn, publication_year, num_pages) VALUES('" + title + "','" + author + "','" + genre + "','" + language + "','" + isbn + "','" + publicationDate.to_str() + "','" + to_string(numPages) + "')";
+			db.insertIntoDatabase(values);
 		}
 	}
 	catch (std::exception& e) {
 		std::cerr << e.what() << endl;
 		}
+}
+
+void addBook() {
+	try {
+		string title;
+		string author;
+		string genre;
+		string language;
+		string isbn;
+		date publicationDate;
+		int numPages;  //number of pages in Book
+
+		cout << "Title: ";
+		getline(cin, title);
+
+		cout << "Author: ";
+		getline(cin, author);
+
+		cout << "Gnere: ";
+		getline(cin, genre);
+
+		cout << "language: ";
+		getline(cin, language);
+
+		cout << "ISBN: ";
+		getline(cin, isbn);
+
+		cout << "Publication Date (YYYY-MM-DD): ";
+		cout << "YYYY: ";
+		int year; cin >> year;
+		publicationDate.setYear(year);
+
+		cout << "MM: ";
+		int month; cin >> month;
+		publicationDate.setMonth(month);
+
+		cout << "DD: ";
+		int day; cin >> day;
+		publicationDate.setDay(day);
+
+		cout << "Number of Pages: ";
+		cin >> numPages;
+
+		book bk(title, author, genre, language, isbn, publicationDate, numPages);
+
+		string tableName = "books";
+
+		string insertionValues = "INSERT INTO " + tableName + " (title, author, genre, laguage, isbn, publication_year, num_pages) VALUES('" + title + "','" + author + "','" + "," + genre + "," + language + "','" + isbn + "','" + publicationDate.to_str() + "','" + to_string(numPages) + "')";
+		db.insertIntoDatabase(insertionValues);
+
+
+	}
+	catch (std::exception &e) {
+		std::cerr << e.what() << endl;
+	}
+}
+
+void viewBook(sql::Connection* con) {
+	try {
+		const string queryStatement = "SELECT * FROM books";
+		sql::Statement* stmt = con->createStatement();
+		sql::ResultSet* res = stmt->executeQuery(queryStatement);
+
+		while (res->next()) {
+			string title = res->getString("title");
+			string author = res->getString("author");
+			string genre = res->getString("genre");
+			string isbn = res->getString("isbn");
+			string publicationDate = res->getString("publication_year");
+			int numPages = res->getInt("numPages");
+
+			cout << "Title: " << title << ", Author: " << author << ", Genre: " << genre << ", ISBN: " << isbn << ", Pulication Date: " << publicationDate << ", Pages: " << numPages << endl;
+		}
+	}
+	catch (sql::SQLException& e) {
+	std::cerr << e.what() << endl;
+	}
 }

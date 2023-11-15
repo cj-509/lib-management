@@ -17,6 +17,7 @@ class database {
 	public:
 		database();
 		database(const string host, const string username, const string password, const string schema);
+		sql::Connection* getConnection();
 		~database();
 
 		void createDatabase(string& dbname);

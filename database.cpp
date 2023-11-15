@@ -15,6 +15,10 @@ database::database(const string host, const string username,const string passwor
 	}
 }
 
+sql::Connection* database::getConnection() {
+	return con;
+}
+
 database::~database() {
 	delete con;
 }
@@ -47,7 +51,7 @@ void database::updateDatabase(const string& tableName) {
 string database::createTable(const string& tableName, const string& fields) {
 	try {
 		sql::Statement* stmt = con->createStatement();
-		stmt->execute("CREATE TABLE IF NOT EXISTS " + tableName + "(" + fields + ");");
+		stmt->execute("CREATE TABLE IF NOT EXISTS " + tableName + " (" + fields + ");");
 
 		delete stmt;
 		return "Table has been created successfully";

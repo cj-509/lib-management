@@ -95,7 +95,7 @@ int date::getDaysInMonth(int year, int month) const {
 
 //__BOOK CLASS DEFINITIONst__
 book::book() {}
-book::book(string t, string a, string g, string l, string i, int p,  int n) : title(t), author(a), genre(g), language(l), publicationYear(p), isbn(i), numPages(n) {}
+book::book(string t, string a, string g, string l, string i, date p,  int n) : title(t), author(a), genre(g), language(l), publicationDate(p), isbn(i), numPages(n) {}
 
 string book::getTitle() {
 	return title;
@@ -112,14 +112,13 @@ string book::getLanguage() {
 string book::getIsbn() {
 	return isbn;
 }
-int book::getPublicationYear() {
-	return publicationYear;
-}
+
 int book::getNumPages() {
 	return numPages;
 }
+/*
 void book::createBook() {
-	std::cout << "Enter Book's name: ";
+	std::cout << "Enter Book's Title: ";
 	std::getline(std::cin, title);
 
 	std::cout << "Enter Author's name: ";
@@ -139,7 +138,7 @@ void book::createBook() {
 
 	std::cout << "Enter Number of pages: ";
 	std::cin >> numPages;
-}
+} */
 
 //display book
 ostream& operator<<(std::ostream& os, book& b) {
@@ -148,7 +147,7 @@ ostream& operator<<(std::ostream& os, book& b) {
 	os << "Genre: " << b.genre << std::endl;
 	os << "Language: " << b.language << std::endl;
 	os << "ISBN: " << b.isbn << std::endl;
-	os << "Published: " << b.publicationYear << std::endl;
+	os << "Published: " << b.publicationDate << std::endl;
 	os <<"Pages: " << b.numPages << std::endl;
 	return os;
 }

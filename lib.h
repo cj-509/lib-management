@@ -60,11 +60,11 @@ class book {
 		string genre;
 		string language;
 		string isbn;
-		int publicationYear;
+		date publicationDate;
 		int numPages;
 	public:
 		book();
-		book(string title, string author, string genre, string language, string isbn, int publicationYear, int numpages);
+		book(string title, string author, string genre, string language, string isbn, date publicationDate, int numpages);
 
 		//getter functions
 		string getTitle();
@@ -72,7 +72,7 @@ class book {
 		string getGenre();
 		string getLanguage();
 		string getIsbn();
-		int getPublicationYear();
+		date getPublicationDate();
 		int getNumPages();
 
 		void createBook();
