@@ -2,10 +2,16 @@
 #include "database.h"
 #include <cstdlib>
 #include <stdexcept>
+#include <iomanip>
+#include <algorithm>
+#include <vector>
 using std::cout;
 using std::cin;
 using std::endl;
 using std::getline;
+using std::setw;
+using std::setfill;
+using std::left;
 //using std::string;
 
 #define username "root"
@@ -40,14 +46,10 @@ int main() {
 	//db.useDatabase(nn);
 	//system("mysql -u root -p");
 
-	createBook();
-	char res;
-	cout << "Would you like to view the book:  (y/n)";
-	cin >> res;
+	addBook();
 
-	if (res == 'y' || res == 'y') {
-		viewBook(db.getConnection());
-	}
+	viewBook(db.getConnection());
+
 	return 0;
 
 }
@@ -190,8 +192,7 @@ void createBook() {
 		string language;
 		date publicationDate;
 		string isbn;
-		int numPages;
-
+		int pages;
 		cout << "Enter the book's information below \n\n";
 		cout << "Title: ";
 		getline(cin, title);
@@ -221,18 +222,18 @@ void createBook() {
 		cout << "ISBN: ";
 		cin >> isbn;
 
-		cout << "Number of Pages: ";
-		cin >> numPages;
+		cout << "Pages: ";
+		cin >> pages;
 		book b();
 		//(string title, string author, string genre, string language, string isbn, int publicationDate, int numpages)
 
 		string tableName = "books"; // books
-		string fields = tableName + "title VARCHAR(255) NOT NULL, author VARCHAR(255) NOT NULL, genre VARCHAR(255), language VARCHAR(50), isbn VARCHAR(255) NOT NULL PRIMARY KEY, publication_year INT, num_pages INT NOT NULL";
+		string fields = "title VARCHAR(255) NOT NULL, author VARCHAR(255) NOT NULL, genre VARCHAR(50), language VARCHAR(50), isbn VARCHAR(255) NOT NULL, publication_date DATE, pages INT";
 		string result = db.createTable(tableName, fields);
 
 		if (result == "Table has been created successfully" || result == "Table " + tableName + " already exists") {
 			//string values = "INSERT INTO " + tableName + " (title, author, genre, laguage, isbn, publication_year, num_pages) VALUES('" + title + "','" + author + "','" + "," + genre + "," + language + "','" + isbn + "','" + publicationDate.to_str() + "','" + to_string(numPages) + "')";
-			string values = "INSERT INTO " + tableName + " (title, author, genre, language, isbn, publication_year, num_pages) VALUES('" + title + "','" + author + "','" + genre + "','" + language + "','" + isbn + "','" + publicationDate.to_str() + "','" + to_string(numPages) + "')";
+			string values = "INSERT INTO " + tableName + " (title, author, genre, language, isbn, publication_date, pages) VALUES('" + title + "','" + author + "','" + genre + "','" + language + "','" + isbn + "','" + publicationDate.to_str() + "','" + to_string(pages) + "')";
 			db.insertIntoDatabase(values);
 		}
 	}
@@ -247,26 +248,23 @@ void addBook() {
 		string author;
 		string genre;
 		string language;
-		string isbn;
 		date publicationDate;
-		int numPages;  //number of pages in Book
-
+		string isbn;
+		int pages;
+		cout << "Enter the book's information below \n\n";
 		cout << "Title: ";
 		getline(cin, title);
 
 		cout << "Author: ";
 		getline(cin, author);
 
-		cout << "Gnere: ";
+		cout << "Genre: ";
 		getline(cin, genre);
 
-		cout << "language: ";
+		cout << "Language: ";
 		getline(cin, language);
 
-		cout << "ISBN: ";
-		getline(cin, isbn);
-
-		cout << "Publication Date (YYYY-MM-DD): ";
+		cout << "Pulication year (YYYY-MM-DD)\n";
 		cout << "YYYY: ";
 		int year; cin >> year;
 		publicationDate.setYear(year);
@@ -279,14 +277,17 @@ void addBook() {
 		int day; cin >> day;
 		publicationDate.setDay(day);
 
-		cout << "Number of Pages: ";
-		cin >> numPages;
+		cout << "ISBN: ";
+		cin >> isbn;
 
-		book bk(title, author, genre, language, isbn, publicationDate, numPages);
+		cout << "Pages: ";
+		cin >> pages;
+
+		book bk(title, author, genre, language, isbn, publicationDate, pages);
 
 		string tableName = "books";
 
-		string insertionValues = "INSERT INTO " + tableName + " (title, author, genre, laguage, isbn, publication_year, num_pages) VALUES('" + title + "','" + author + "','" + "," + genre + "," + language + "','" + isbn + "','" + publicationDate.to_str() + "','" + to_string(numPages) + "')";
+		string insertionValues = "INSERT INTO " + tableName + " (title, author, genre, language, isbn, publication_date, pages) VALUES('" + title + "','" + author + "','" + genre + "','" + language + "','" + isbn + "','" + publicationDate.to_str() + "','" + to_string(pages) + "')";
 		db.insertIntoDatabase(insertionValues);
 
 
@@ -296,24 +297,87 @@ void addBook() {
 	}
 }
 
+
 void viewBook(sql::Connection* con) {
 	try {
 		const string queryStatement = "SELECT * FROM books";
 		sql::Statement* stmt = con->createStatement();
 		sql::ResultSet* res = stmt->executeQuery(queryStatement);
 
-		while (res->next()) {
-			string title = res->getString("title");
-			string author = res->getString("author");
-			string genre = res->getString("genre");
-			string isbn = res->getString("isbn");
-			string publicationDate = res->getString("publication_year");
-			int numPages = res->getInt("numPages");
+		//get column names and find the maximum with for each column
+		std::vector<std::string> columnNames = { "title", "author", "genre", "language", "isbn", "publication_date", "pages" };
+		std::vector<int> columnWidths(columnNames.size(), 0);
 
-			cout << "Title: " << title << ", Author: " << author << ", Genre: " << genre << ", ISBN: " << isbn << ", Pulication Date: " << publicationDate << ", Pages: " << numPages << endl;
+		while (res->next()) {
+			for (size_t i = 0; i < columnNames.size(); ++i) {
+				string columnValues = res->getString(columnNames[i]);
+				columnWidths[i] = std::max(columnWidths[i], static_cast<int>(columnValues.length()));
+				
+			}
+		}
+		int totalWidth = 1;
+		for (size_t i = 0; i < columnNames.size(); ++i) {
+			totalWidth += columnWidths[i] + 3;
+		}
+
+		//print table header
+		cout << "+";
+		for (size_t i = 0; i < columnWidths.size(); ++i) {
+			for (int j = 0; j < columnWidths[i] + 2; ++j) {
+				cout << "-";
+			}
+			cout << "+";
+		}
+		cout << endl;
+
+		std::cout << "| ";
+		for (size_t i = 0; i < columnNames.size(); ++i) {
+			if (columnNames[i] == "pages") {
+				cout << setw(columnWidths[i] + 2) << left << " " + columnNames[i] + " |";
+			}
+			else {
+				cout << setw(columnWidths[i] + 1) << left << columnNames[i] << "|";
+			}
+
+		}
+		cout << endl;
+
+		cout << "+";
+		for (size_t i = 0; i < columnWidths.size(); ++i) {
+			for (int j = 0; j < columnWidths[i] + 2; ++j) {
+				cout << "-";
+			}
+			cout << "+";
+		}
+		cout << std::endl;
+
+		// Print table data
+		res->beforeFirst();  // Reset result set to the beginning
+
+		while (res->next()) {
+			cout << "| ";
+			for (size_t i = 0; i < columnNames.size(); ++i) {
+				string columnValue = res->getString(columnNames[i]);
+				if (columnNames[i] == "pages") {
+					cout << setw(columnWidths[i] +2) << left << " " + res->getString(columnNames[i]) + " |";
+				}
+				else {
+					cout << setw(columnWidths[i] + 1) << left << res->getString(columnNames[i]) << "|";
+				}
+			}
+			cout << endl;
+
+			cout << "+";
+			for (size_t i = 0; i < columnWidths.size(); ++i) {
+				for (int j = 0; j < columnWidths[i] + 2; ++j) {
+					cout << "-";
+				}
+				cout << "+";
+			}
+			cout << std::endl;
 		}
 	}
 	catch (sql::SQLException& e) {
-	std::cerr << e.what() << endl;
+		std::cerr << e.what() << endl;
 	}
 }
