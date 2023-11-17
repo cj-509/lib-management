@@ -46,7 +46,7 @@ int main() {
 	//db.useDatabase(nn);
 	//system("mysql -u root -p");
 
-	addBook();
+	//addBook();
 
 	viewBook(db.getConnection());
 
@@ -188,7 +188,7 @@ void createBook() {
 	try {
 		string title;
 		string author;
-		string genre;
+		string subject;
 		string language;
 		date publicationDate;
 		string isbn;
@@ -201,7 +201,7 @@ void createBook() {
 		getline(cin, author);
 
 		cout << "Genre: ";
-		getline(cin, genre);
+		getline(cin, subject);
 
 		cout << "Language: ";
 		getline(cin, language);
@@ -228,12 +228,12 @@ void createBook() {
 		//(string title, string author, string genre, string language, string isbn, int publicationDate, int numpages)
 
 		string tableName = "books"; // books
-		string fields = "title VARCHAR(255) NOT NULL, author VARCHAR(255) NOT NULL, genre VARCHAR(50), language VARCHAR(50), isbn VARCHAR(255) NOT NULL, publication_date DATE, pages INT";
+		string fields = "title VARCHAR(255) NOT NULL, author VARCHAR(255) NOT NULL, subject VARCHAR(50), language VARCHAR(50), isbn VARCHAR(255) NOT NULL, publication_date DATE, pages INT";
 		string result = db.createTable(tableName, fields);
 
 		if (result == "Table has been created successfully" || result == "Table " + tableName + " already exists") {
 			//string values = "INSERT INTO " + tableName + " (title, author, genre, laguage, isbn, publication_year, num_pages) VALUES('" + title + "','" + author + "','" + "," + genre + "," + language + "','" + isbn + "','" + publicationDate.to_str() + "','" + to_string(numPages) + "')";
-			string values = "INSERT INTO " + tableName + " (title, author, genre, language, isbn, publication_date, pages) VALUES('" + title + "','" + author + "','" + genre + "','" + language + "','" + isbn + "','" + publicationDate.to_str() + "','" + to_string(pages) + "')";
+			string values = "INSERT INTO " + tableName + " (title, author, subject, language, isbn, publication_date, pages) VALUES('" + title + "','" + author + "','" + subject + "','" + language + "','" + isbn + "','" + publicationDate.to_str() + "','" + to_string(pages) + "')";
 			db.insertIntoDatabase(values);
 		}
 	}
@@ -305,7 +305,7 @@ void viewBook(sql::Connection* con) {
 		sql::ResultSet* res = stmt->executeQuery(queryStatement);
 
 		//get column names and find the maximum with for each column
-		std::vector<std::string> columnNames = { "title", "author", "genre", "language", "isbn", "publication_date", "pages" };
+		std::vector<std::string> columnNames = { "title", "author", "subject", "language", "isbn", "publication_date", "pages" };
 		std::vector<int> columnWidths(columnNames.size(), 0);
 
 		while (res->next()) {
