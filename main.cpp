@@ -12,7 +12,7 @@ using std::getline;
 using std::setw;
 using std::setfill;
 using std::left;
-//using std::string;
+
 
 #define username "root"
 #define password "password"
@@ -22,12 +22,12 @@ using std::left;
 database db(host, username, password, schema);
 
 
-int randomN();
+int randomN(); // to generate a random 7 digits id to each student
 
 //user management
 void createAccount();
-bool login();
-void deleteStudent();
+string login(sql::Connection* con);
+void deleteStudent(); // to delete a specific students
 void viewStudents();
 
 
@@ -41,14 +41,12 @@ void viewBook(sql::Connection* con);
 
 
 int main() {
-	//createAccount();
-	//string nn = "library";
-	//db.useDatabase(nn);
-	//system("mysql -u root -p");
+	createAccount();
+	login(db.getConnection());
 
 	//addBook();
 
-	viewBook(db.getConnection());
+	//viewBook(db.getConnection());
 
 	return 0;
 
@@ -82,7 +80,7 @@ void createAccount() {
 			string name;
 			string home_town;
 			date enrollmentDate;
-			int id = randomN();
+			int studentId = randomN();
 			char account_type = 'S';
 
 			// getting user data
@@ -107,16 +105,16 @@ void createAccount() {
 
 
 
-			student st(name, home_town, enrollmentDate, id, account_type);
+			student st(name, home_town, enrollmentDate, studentId, account_type);
 			//cout << st << endl;
 
 			//create & insertion values
 			string tableName = "Students";
-			string student_fiels = "name VARCHAR(255) NOT NULL, home_town VARCHAR(255), enrollment_date DATE, Id INT PRIMARY KEY, account_type VARCHAR(1)";
+			string student_fiels = "name VARCHAR(255) NOT NULL, home_town VARCHAR(255), enrollment_date DATE, student_id INT PRIMARY KEY, account_type VARCHAR(1)";
 			string result = db.createTable(tableName, student_fiels);
 
 			if (result == "Table has been created successfully" || result == "Table " + tableName + " already exists") {
-				string values = "INSERT INTO " + tableName + " (name, home_town, enrollment_date, Id, account_type) VALUES('" + name + "','" + home_town + "','" + enrollmentDate.to_str() + "','" + to_string(id) + "','" + account_type + "')";
+				string values = "INSERT INTO " + tableName + " (name, home_town, enrollment_date, student_id, account_type) VALUES('" + name + "','" + home_town + "','" + enrollmentDate.to_str() + "','" + to_string(studentId) + "','" + account_type + "')";
 				db.insertIntoDatabase(values);
 			} else {
 				std::cerr << "Table creation failed " << endl;
@@ -159,28 +157,73 @@ void createAccount() {
 
 			admin ad(name, aUsername, aPassword, dob, accType);
 
-			string tableName = "admin_users";
+			string tableName = "admin";
 			
 			string admin_fields = "name VARCHAR(255) NOT NULL, username VARCHAR(255) NOT NULL UNIQUE PRIMARY KEY, password VARCHAR(255), DOB DATE, account_type VARCHAR(1)";
 			//string admin_values = name + ", " + aUsername + ", " + aPassword + ", " + dob.to_str() + to_string(accType);
 
 			string result = db.createTable(name, admin_fields);
-
-
+			
 			if (result == "Table has been created successfully" || result == "Table " + tableName + " already exists") {
-				string values = "INSERT INTO " + tableName + " (name, username, password, DOB, account_type) VALUES('" + name + "','" + aUsername + "','" + aPassword + "','" + dob.to_str() + "','" + accType  + "')";
+				string values = "INSERT INTO " + tableName + " (name, username, password, DOB, account_type) VALUES('" + name + "','" + aUsername + "','" + aPassword + "','" + dob.to_str() + "','" + string(1, accType)  + "')";
 				db.insertIntoDatabase(values);
-			}
+			} 
 
 		}
 		catch (std::exception& ex) {
 			std::cerr << ex.what() << endl;
 		}
 	}
+	else {
+		cout << "Invalid input" << endl;
+	}
 
 }
 
-bool login();
+string login(sql::Connection* con) {
+
+	try {
+		
+
+		int choice;
+		cout << "1\tLogin as a student \n2.\tLogin as an administrator: ";
+		cin >> choice;
+		std::cin.ignore();
+
+		if (choice == 1) {
+			const string tableName = "students";
+
+		}
+		else if (choice == 2) {
+			//getting admin username and password
+			string a_username; 
+			string a_password;
+
+			//const string tableName = "admin_users";
+			
+			cout << "username: ";
+			getline(cin, a_username);
+
+			cout << "password: ";
+			getline(cin, a_password);
+
+			const string queryStament = "SELECT * FROM admin WHERE username='" + a_username + "' AND password='" + a_password + "' AND account_type='A'";
+			sql::Statement* stmt = con->createStatement();;
+			sql::ResultSet* res = stmt->executeQuery(queryStament);
+
+			while (res->next()) {
+				string type = res->getString("account_type");
+				return type;
+			}
+			delete res;
+			delete stmt;
+		} 
+		
+	}
+	catch (sql::SQLException& e) {
+		std::cerr << e.what() << endl;
+	}
+}
 void deleteStudent();
 void viewStudents();
 
@@ -376,6 +419,8 @@ void viewBook(sql::Connection* con) {
 			}
 			cout << std::endl;
 		}
+		delete res;
+		delete stmt;
 	}
 	catch (sql::SQLException& e) {
 		std::cerr << e.what() << endl;
