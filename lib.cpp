@@ -6,6 +6,13 @@
 date::date(int y, int m, int d) : year(y), month(m), day(d) {}
 date::date() : year(0000), month(0), day(0) {}
 
+//constructor from str (yyyy-mm-dd)
+date::date(const string& dateString) {
+	std::istringstream ss(dateString);
+	char dash1, dash2; // to skip between components
+	ss >> year >> dash1 >> month >> dash2 >> day;
+}
+
 void date::setYear(int yyyy) {
 	year = yyyy;
 }
@@ -32,6 +39,12 @@ string date::to_str() const {
 	string formattedMonth = (month < 10) ? "0" + to_string(month) : to_string(month);
 	string formattedDay = (day < 10) ? "0" + to_string(day) : to_string(day);
 	return formattedYear + "-" + formattedMonth + "-" + formattedDay;
+}
+
+void::date::display() {
+	std::cout << std::setfill('O') << std::setw(4) << year << '-'
+		<< std::setw(2) << month << '-'
+		<< std::setw(2) << day << std::endl;
 }
 //display date obeject definition
 std::ostream& operator<<(std::ostream& os, date& d) {

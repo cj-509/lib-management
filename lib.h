@@ -3,6 +3,8 @@
 #include <cmath> // using abs function to convert negative date result
 #include <iostream>
 #include <string>
+#include <sstream>
+#include <iomanip>
 
 using std::to_string;
 using std::string;
@@ -20,18 +22,23 @@ class date {
 		//constructor
 		date(int, int, int);
 		date();
+		
+		//constructor from str (yyyy-mm-dd)
+		date(const string& dateString);
 
-		//setter function
+		//setter methods
 		void setYear(int);
 		void setMonth(int);
 		void setDay(int);
 
-		//getter function
+		//getter methods
 		int getYear();
 		int getMonth();
 		int getDay();
 
 		string to_str() const;
+
+		void display();
 
 		//display date object
 		friend std::ostream& operator<<(std::ostream& os, date& d);
@@ -66,7 +73,7 @@ class book {
 		book();
 		book(string title, string author, string genre, string language, string isbn, date publicationDate, int numpages);
 
-		//getter functions
+		//getter methods
 		string getTitle();
 		string getAuthor();
 		string getGenre();

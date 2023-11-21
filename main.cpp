@@ -2,7 +2,6 @@
 #include "database.h"
 #include <cstdlib>
 #include <stdexcept>
-#include <iomanip>
 #include <algorithm>
 #include <vector>
 using std::cout;
@@ -36,18 +35,14 @@ void createBook();
 void addBook();
 void searchBook();
 void modifyBook();
-void deleteBook();
+void deleteBook(sql::Connection* con);
 void viewBook(sql::Connection* con);
 
 
 int main() {
-	createAccount();
-	login(db.getConnection());
-
-	//addBook();
-
-	//viewBook(db.getConnection());
-
+	date x("2023-11-21");
+	x.display();
+	x.getYear();
 	return 0;
 
 }
@@ -243,7 +238,7 @@ void createBook() {
 		cout << "Author: ";
 		getline(cin, author);
 
-		cout << "Genre: ";
+		cout << "Subject: ";
 		getline(cin, subject);
 
 		cout << "Language: ";
@@ -271,7 +266,7 @@ void createBook() {
 		//(string title, string author, string genre, string language, string isbn, int publicationDate, int numpages)
 
 		string tableName = "books"; // books
-		string fields = "title VARCHAR(255) NOT NULL, author VARCHAR(255) NOT NULL, subject VARCHAR(50), language VARCHAR(50), isbn VARCHAR(255) NOT NULL, publication_date DATE, pages INT";
+		string fields = "title VARCHAR(255) NOT NULL, author VARCHAR(255) NOT NULL, subject VARCHAR(50), language VARCHAR(50), isbn VARCHAR(255) NOT NULL UNIQUE PRIMARY KEY, publication_date DATE, pages INT";
 		string result = db.createTable(tableName, fields);
 
 		if (result == "Table has been created successfully" || result == "Table " + tableName + " already exists") {
@@ -289,7 +284,7 @@ void addBook() {
 	try {
 		string title;
 		string author;
-		string genre;
+		string subject;
 		string language;
 		date publicationDate;
 		string isbn;
@@ -301,8 +296,8 @@ void addBook() {
 		cout << "Author: ";
 		getline(cin, author);
 
-		cout << "Genre: ";
-		getline(cin, genre);
+		cout << "Subject: ";
+		getline(cin, subject);
 
 		cout << "Language: ";
 		getline(cin, language);
@@ -326,11 +321,11 @@ void addBook() {
 		cout << "Pages: ";
 		cin >> pages;
 
-		book bk(title, author, genre, language, isbn, publicationDate, pages);
+		book bk(title, author, subject, language, isbn, publicationDate, pages);
 
 		string tableName = "books";
 
-		string insertionValues = "INSERT INTO " + tableName + " (title, author, genre, language, isbn, publication_date, pages) VALUES('" + title + "','" + author + "','" + genre + "','" + language + "','" + isbn + "','" + publicationDate.to_str() + "','" + to_string(pages) + "')";
+		string insertionValues = "INSERT INTO " + tableName + " (title, author, subject, language, isbn, publication_date, pages) VALUES('" + title + "','" + author + "','" + subject + "','" + language + "','" + isbn + "','" + publicationDate.to_str() + "','" + to_string(pages) + "')";
 		db.insertIntoDatabase(insertionValues);
 
 
@@ -341,6 +336,23 @@ void addBook() {
 }
 
 
+void deleteBook(sql::Connection* con) {
+	try {
+		
+		viewBook(db.getConnection());
+		cin.ignore(); // clear buffer input
+		string books_isbn;
+		cout << "Enter the Book's isbn you would like to delete: ";
+		getline(cin, books_isbn);
+
+		const string queryStmt = "DELETE FROM books WHERE isbn = " + books_isbn;
+		sql::Statement* stmt = con->createStatement();
+		sql::ResultSet* res = stmt->executeQuery(queryStmt);
+	}
+	catch (sql::SQLException& e) {
+		std::cerr << e.what() << endl;
+	}
+}
 void viewBook(sql::Connection* con) {
 	try {
 		const string queryStatement = "SELECT * FROM books";
