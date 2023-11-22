@@ -8,9 +8,19 @@ date::date() : year(0000), month(0), day(0) {}
 
 //constructor from str (yyyy-mm-dd)
 date::date(const string& dateString) {
+	parseDateString(dateString);
+}
+
+//Helper function to parse the date string
+void date::parseDateString(const string& dateString) {
 	std::istringstream ss(dateString);
 	char dash1, dash2; // to skip between components
 	ss >> year >> dash1 >> month >> dash2 >> day;
+}
+
+// Helper function to parse the date string
+void date::setDateFromString(const std::string& dateString) {
+	parseDateString(dateString);
 }
 
 void date::setYear(int yyyy) {
@@ -41,14 +51,16 @@ string date::to_str() const {
 	return formattedYear + "-" + formattedMonth + "-" + formattedDay;
 }
 
-void::date::display() {
-	std::cout << std::setfill('O') << std::setw(4) << year << '-'
-		<< std::setw(2) << month << '-'
-		<< std::setw(2) << day << std::endl;
-}
+
 //display date obeject definition
 std::ostream& operator<<(std::ostream& os, date& d) {
-	os << d.getYear() << "-" << d.getMonth() << "-" << d.getDay() << std::endl;
+	string formattedYear = to_string(d.getYear());
+	string formattedMonth = (d.getMonth() < 10) ? "0" + to_string(d.getMonth()) : to_string(d.getMonth());
+	string formatedDay = (d.getDay() < 10) ? "0" + to_string(d.getDay()) : to_string(d.getDay());
+
+	os << std::setfill('0') << std::setw(4) << formattedYear << '-'
+		<< std::setw(2) << formattedMonth << '-'
+		<< std::setw(2) << formatedDay << std::endl;
 	return os;
 }
 // Calculate the difference between two dates

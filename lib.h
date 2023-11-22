@@ -18,6 +18,9 @@ class date {
 		int year;
 		int month;
 		int day;
+
+		//Helper function to parse the date string
+		void parseDateString(const string& dateString);
 	public:
 		//constructor
 		date(int, int, int);
@@ -25,6 +28,9 @@ class date {
 		
 		//constructor from str (yyyy-mm-dd)
 		date(const string& dateString);
+
+		// Setter method for setting the date from string
+		void setDateFromString(const std::string& dateString);
 
 		//setter methods
 		void setYear(int);
@@ -37,8 +43,6 @@ class date {
 		int getDay();
 
 		string to_str() const;
-
-		void display();
 
 		//display date object
 		friend std::ostream& operator<<(std::ostream& os, date& d);

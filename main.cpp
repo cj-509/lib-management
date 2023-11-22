@@ -40,9 +40,10 @@ void viewBook(sql::Connection* con);
 
 
 int main() {
-	date x("2023-11-21");
-	x.display();
-	x.getYear();
+	date x("2023-1-9");
+	
+	cout << x << endl;
+	//cout << x.to_str() << endl;
 	return 0;
 
 }
@@ -86,18 +87,10 @@ void createAccount() {
 			cout << "Enter your Home Town: ";
 			getline(cin, home_town);
 
-			cout << "Enter your enrollment  date (YYYY-MM-DD)\n";
-			cout << "YYYY: "; int year; cin >> year;
-			enrollmentDate.setYear(year);
-
-			//cout << "Enter your date of enrollment\n";
-			cout << "MM: "; int month; cin >> month;
-			enrollmentDate.setMonth(month);
-
-			//cout << "Enter your date of enrollment\n";
-			cout << "DD: "; int day; cin >> day;
-			enrollmentDate.setDay(day);
-
+			cout << "Enter your enrollment  date (YYYY-MM-DD): ";
+			string setdate;
+			getline(cin, setdate);
+			enrollmentDate.setDateFromString(setdate);
 
 
 			student st(name, home_town, enrollmentDate, studentId, account_type);
@@ -134,15 +127,10 @@ void createAccount() {
 			getline(cin, name);
 			
 
-			cout << "Enter your DOB (YYYY-MM-DD) \n";
-			cout << "YYYY: "; cin >> year;
-			dob.setYear(year);
-
-			cout << "MM: "; cin >> month;
-			dob.setMonth(month);
-
-			cout << "DD: "; cin >> day;
-			dob.setDay(day);
+			cout << "Enter your DOB (YYYY-MM-DD): ";
+			string setdob;
+			getline(cin, setdob);
+			dob.setDateFromString(setdob);
 
 			cout << "Enter your username: ";
 			cin >> aUsername;
@@ -244,18 +232,10 @@ void createBook() {
 		cout << "Language: ";
 		getline(cin, language);
 
-		cout << "Pulication year (YYYY-MM-DD)\n";
-		cout << "YYYY: ";
-		int year; cin >> year;
-		publicationDate.setYear(year);
-
-		cout << "MM: ";
-		int month; cin >> month;
-		publicationDate.setMonth(month);
-
-		cout << "DD: ";
-		int day; cin >> day;
-		publicationDate.setDay(day);
+		cout << "Pulication year (YYYY-MM-DD): ";
+		string setPubDate;
+		getline(cin, setPubDate);
+		publicationDate.setDateFromString(setPubDate);
 		
 		cout << "ISBN: ";
 		cin >> isbn;
