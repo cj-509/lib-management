@@ -26,8 +26,8 @@ int randomN(); // to generate a random 7 digits id to each student
 //user management
 void createAccount();
 string login(sql::Connection* con);
-void deleteStudent(); // to delete a specific students
-void viewStudents();
+void deleteStudent(sql::Connection* con); // to delete a specific students
+void viewStudents(sql::Connection* con);
 
 
 //book management
@@ -40,10 +40,8 @@ void viewBook(sql::Connection* con);
 
 
 int main() {
-	date x("2023-1-9");
-	
-	cout << x << endl;
-	//cout << x.to_str() << endl;
+	createBook();
+	deleteBook(db.getConnection());
 	return 0;
 
 }
@@ -207,8 +205,47 @@ string login(sql::Connection* con) {
 		std::cerr << e.what() << endl;
 	}
 }
-void deleteStudent();
-void viewStudents();
+void deleteStudent(sql::Connection* con) {
+	viewStudents(db.getConnection());
+	
+	try {
+		int id;
+		cout << "Student ID: ";
+		cin >> id;
+
+		const string deletequery = "DELETE FROM students WHERE student_id = " + id;
+
+		sql::Statement* stmt = con->createStatement();
+		sql::ResultSet* res = stmt->executeQuery(deletequery);
+
+		delete res;
+		delete stmt;
+	}
+	catch (sql::SQLException& e) {
+		std::cerr << e.what() << endl;
+	}
+}
+
+void viewStudents(sql::Connection* con) {
+	try {
+		const string queryStatement = "SELECT * FROM studnets";
+		sql::Statement* stmt = con->createStatement();
+		sql::ResultSet* res = stmt->executeQuery(queryStatement);
+
+		//name, home_town, enrollment_date, student_id, account_type
+		std::vector<string> columnNames = { "name", "home_town", "enrollment_date", "student_id", "account_type" };
+		std::vector<int> columWidths(columnNames.size(), 0);
+
+		while (res->next()) {
+			for (int i = 0; i < columnNames.size(); ++i) {
+				string columnValues = res->getString(columnNames[i]);
+			}
+		}
+	}
+	catch (sql::SQLException& e) {
+		std::cerr << e.what() << endl;
+	}
+}
 
 void createBook() {
 	try {
@@ -340,7 +377,7 @@ void viewBook(sql::Connection* con) {
 		sql::ResultSet* res = stmt->executeQuery(queryStatement);
 
 		//get column names and find the maximum with for each column
-		std::vector<std::string> columnNames = { "title", "author", "subject", "language", "isbn", "publication_date", "pages" };
+		std::vector<string> columnNames = { "title", "author", "subject", "language", "isbn", "publication_date", "pages" };
 		std::vector<int> columnWidths(columnNames.size(), 0);
 
 		while (res->next()) {
