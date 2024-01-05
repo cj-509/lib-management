@@ -68,17 +68,7 @@ date date::operator-(const date& other) const {
 	int diffYear = year - other.year;
 	int diffMonth = month - other.month;
 	int diffDay = day - other.day;
-	/*
-	if (diffDay < 0) {
-		diffMonth--;
-		int dayInPrevMonth = getDaysInMonth(other.year, other.month);
-		diffDay += dayInPrevMonth;
-	}
-	if (diffMonth < 0) {
-		diffYear--;
-		diffMonth += 12;
-	}
-	*/
+
 	return date(abs(diffYear), abs(diffMonth), abs(diffDay));
 }
 
@@ -141,29 +131,6 @@ string book::getIsbn() {
 int book::getNumPages() {
 	return numPages;
 }
-/*
-void book::createBook() {
-	std::cout << "Enter Book's Title: ";
-	std::getline(std::cin, title);
-
-	std::cout << "Enter Author's name: ";
-	std::getline(std::cin, author);
-
-	std::cout << "Enter Book's genre: ";
-	std::getline(std::cin, genre);
-
-	std::cout << "Enter: Book's language: ";
-	std::getline(std::cin, language);
-
-	std::cout << "Enter Book's ISBN: ";
-	std::getline(std::cin, isbn);
-
-	std::cout << "Enter Publication Year: ";
-	std::cin >> publicationYear;
-
-	std::cout << "Enter Number of pages: ";
-	std::cin >> numPages;
-} */
 
 //display book
 ostream& operator<<(std::ostream& os, book& b) {

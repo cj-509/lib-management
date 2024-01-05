@@ -7,6 +7,7 @@ database::database(const string host, const string username,const string passwor
 	try {
 		driver = get_driver_instance();
 		con = driver->connect(host, username, password);
+		createSchema(schema);
 		con->setSchema(schema);
 		std::cout << "Connected successfully" << std::endl;
 	}
@@ -23,9 +24,9 @@ database::~database() {
 	delete con;
 }
 
-void database::createDatabase(string& dbname) {
+void database::createSchema(const string& schemaName) {
 	sql::Statement* stmt = con->createStatement();
-	stmt->execute("CREATE DATABASE IF NOT EXISTS " + dbname);
+	stmt->execute("CREATE DATABASE IF NOT EXISTS " + schemaName);
 
 	delete stmt;
 }

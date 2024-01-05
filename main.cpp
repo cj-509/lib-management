@@ -18,6 +18,7 @@ using std::left;
 #define schema "library"
 #define host "tcp://127.0.0.1:3306"
 
+
 database db(host, username, password, schema);
 
 
@@ -33,23 +34,45 @@ void viewStudents(sql::Connection* con);
 //book management
 void createBook();
 void addBook();
-void searchBook();
-void modifyBook();
+void searchBook(sql::Connection* con);
 void deleteBook(sql::Connection* con);
 void viewBook(sql::Connection* con);
+void rentBook(sql::Connection* con);
 
 
 int main() {
-	createBook();
-	deleteBook(db.getConnection());
+	//createAccount();
+	cout << "========================================================" << endl;
+	cout << "************ WELCOME TO LIBRARY MANAGEMENT ************" << endl;
+	cout << "========================================================" << endl;
+	int userChoice;
+	cout << "1. Login\t 2. Create account" << endl;
+	cin >> userChoice;
+
+	if (userChoice == 1) {
+		string loginResult = login(db.getConnection());
+	}
+	else if (userChoice == 2) {
+		createAccount();
+	}
+	else {
+		cout << "Invalid Input!!" << endl;
+	}
+	createAccount();
+	 //login(db.getConnection());
+	
+	//program ends here
+	cout << "Press enter to exit: ";
+	cin.get();
 	return 0;
+	
 
 }
 
 
 int randomN() {
 	int length = 7; // specify the random number lenght
-	int lower_bound = 1111111;
+	int lower_bound = 0;
 	int upper_bound = 9999999;
 
 	srand((unsigned)time(NULL));
@@ -95,7 +118,7 @@ void createAccount() {
 			//cout << st << endl;
 
 			//create & insertion values
-			string tableName = "Students";
+			string tableName = "students";
 			string student_fiels = "name VARCHAR(255) NOT NULL, home_town VARCHAR(255), enrollment_date DATE, student_id INT PRIMARY KEY, account_type VARCHAR(1)";
 			string result = db.createTable(tableName, student_fiels);
 
@@ -120,7 +143,7 @@ void createAccount() {
 			date dob;
 			char accType = 'A';
 
-			int year; int month; int day;
+			//int year; int month; int day;
 			cout << "Enter your name: ";
 			getline(cin, name);
 			
@@ -143,7 +166,7 @@ void createAccount() {
 			string admin_fields = "name VARCHAR(255) NOT NULL, username VARCHAR(255) NOT NULL UNIQUE PRIMARY KEY, password VARCHAR(255), DOB DATE, account_type VARCHAR(1)";
 			//string admin_values = name + ", " + aUsername + ", " + aPassword + ", " + dob.to_str() + to_string(accType);
 
-			string result = db.createTable(name, admin_fields);
+			string result = db.createTable(tableName, admin_fields);
 			
 			if (result == "Table has been created successfully" || result == "Table " + tableName + " already exists") {
 				string values = "INSERT INTO " + tableName + " (name, username, password, DOB, account_type) VALUES('" + name + "','" + aUsername + "','" + aPassword + "','" + dob.to_str() + "','" + string(1, accType)  + "')";
@@ -174,6 +197,22 @@ string login(sql::Connection* con) {
 		if (choice == 1) {
 			const string tableName = "students";
 
+			int studen_id;
+
+			cout << "Enter your Student ID: ";
+			cin >> studen_id;
+
+			const string statement = "SELECT * WHERE student_id='" + to_string(studen_id) + "' AND account_type='S'";
+			sql::Statement* stmt = con->createStatement();
+			sql::ResultSet* res = stmt->executeQuery(statement);
+
+			while (res->next()) {
+				string type = res->getString("account_type");
+				return type;
+			}
+
+			delete res;
+			delete stmt;
 		}
 		else if (choice == 2) {
 			//getting admin username and password
@@ -194,6 +233,9 @@ string login(sql::Connection* con) {
 
 			while (res->next()) {
 				string type = res->getString("account_type");
+				
+				//delete res;
+				//delete stmt;
 				return type;
 			}
 			delete res;
@@ -228,7 +270,7 @@ void deleteStudent(sql::Connection* con) {
 
 void viewStudents(sql::Connection* con) {
 	try {
-		const string queryStatement = "SELECT * FROM studnets";
+		const string queryStatement = "SELECT * FROM students";
 		sql::Statement* stmt = con->createStatement();
 		sql::ResultSet* res = stmt->executeQuery(queryStatement);
 
@@ -239,8 +281,72 @@ void viewStudents(sql::Connection* con) {
 		while (res->next()) {
 			for (int i = 0; i < columnNames.size(); ++i) {
 				string columnValues = res->getString(columnNames[i]);
+				columWidths[i] = std::max(columWidths[i], static_cast<int>(columnValues.length()));
 			}
 		}
+		int Width = 1;
+		for (size_t i = 0; i < columnNames.size(); ++i) {
+			Width += columWidths[i] + 3;
+		}
+
+		//print table header
+		cout << "+";
+		for (size_t i = 0; i < columWidths.size(); ++i) {
+			for (int j = 0; j < columWidths[i] + 2; ++j) {
+				cout << "-";
+			}
+			cout << "+";
+		}
+		cout << endl;
+
+		std::cout << "| ";
+		for (size_t i = 0; i < columnNames.size(); ++i) {
+			if (columnNames[i] == "account_type") {
+				cout << setw(columWidths[i] + 2) << left << " " + columnNames[i] + " |";
+			}
+			else {
+				cout << setw(columWidths[i] + 1) << left << columnNames[i] << "|";
+			}
+
+		}
+		cout << endl;
+
+		cout << "+";
+		for (size_t i = 0; i < columWidths.size(); ++i) {
+			for (int j = 0; j < columWidths[i] + 2; ++j) {
+				cout << "-";
+			}
+			cout << "+";
+		}
+		cout << std::endl;
+
+		// Print table data
+		res->beforeFirst();  // Reset result set to the beginning
+
+		while (res->next()) {
+			cout << "| ";
+			for (size_t i = 0; i < columnNames.size(); ++i) {
+				string columnValue = res->getString(columnNames[i]);
+				if (columnNames[i] == "account_type") {
+					cout << setw(columWidths[i] + 2) << left << " " + res->getString(columnNames[i]) + " |";
+				}
+				else {
+					cout << setw(columWidths[i] + 1) << left << res->getString(columnNames[i]) << "|";
+				}
+			}
+			cout << endl;
+
+			cout << "+";
+			for (size_t i = 0; i < columWidths.size(); ++i) {
+				for (int j = 0; j < columWidths[i] + 2; ++j) {
+					cout << "-";
+				}
+				cout << "+";
+			}
+			cout << std::endl;
+		}
+		delete res;
+		delete stmt;
 	}
 	catch (sql::SQLException& e) {
 		std::cerr << e.what() << endl;
@@ -351,7 +457,96 @@ void addBook() {
 		std::cerr << e.what() << endl;
 	}
 }
+void searchBook(sql::Connection* con) {
 
+	try {
+		//getting user input
+		string title;
+		cout << "Enter book's Title: ";
+		getline(cin, title);
+		
+		const string query = "SELECT * FROM books WHERE title = '" + title + "'";
+		sql::Statement* stmt = con->createStatement();
+		sql::ResultSet* res = stmt->executeQuery(query);
+
+		std::vector<string> columnNames = { "title", "author", "subject", "language", "isbn", "publication_date", "pages" };
+		std::vector<int> columnWidths(columnNames.size(), 0);
+
+		while (res->next()) {
+			for (size_t i = 0; i < columnNames.size(); ++i) {
+				string columnValues = res->getString(columnNames[i]);
+				columnWidths[i] = std::max(columnWidths[i], static_cast<int>(columnValues.length()));
+
+			}
+		}
+		int totalWidth = 1;
+		for (size_t i = 0; i < columnNames.size(); ++i) {
+			totalWidth += columnWidths[i] + 3;
+		}
+
+		//print table header
+		cout << "+";
+		for (size_t i = 0; i < columnWidths.size(); ++i) {
+			for (int j = 0; j < columnWidths[i] + 2; ++j) {
+				cout << "-";
+			}
+			cout << "+";
+		}
+		cout << endl;
+
+		std::cout << "| ";
+		for (size_t i = 0; i < columnNames.size(); ++i) {
+			if (columnNames[i] == "pages") {
+				cout << setw(columnWidths[i] + 2) << left << " " + columnNames[i] + " |";
+			}
+			else {
+				cout << setw(columnWidths[i] + 1) << left << columnNames[i] << "|";
+			}
+
+		}
+		cout << endl;
+
+		cout << "+";
+		for (size_t i = 0; i < columnWidths.size(); ++i) {
+			for (int j = 0; j < columnWidths[i] + 2; ++j) {
+				cout << "-";
+			}
+			cout << "+";
+		}
+		cout << std::endl;
+
+		// Print table data
+		res->beforeFirst();  // Reset result set to the beginning
+
+		while (res->next()) {
+			cout << "| ";
+			for (size_t i = 0; i < columnNames.size(); ++i) {
+				string columnValue = res->getString(columnNames[i]);
+				if (columnNames[i] == "pages") {
+					cout << setw(columnWidths[i] + 2) << left << " " + res->getString(columnNames[i]) + " |";
+				}
+				else {
+					cout << setw(columnWidths[i] + 1) << left << res->getString(columnNames[i]) << "|";
+				}
+			}
+			cout << endl;
+
+			cout << "+";
+			for (size_t i = 0; i < columnWidths.size(); ++i) {
+				for (int j = 0; j < columnWidths[i] + 2; ++j) {
+					cout << "-";
+				}
+				cout << "+";
+			}
+			cout << std::endl;
+		}
+		delete res;
+		delete stmt;
+	}
+	catch (sql::SQLException& e) {
+		std::cerr << e.what() << endl;
+	}
+}
 
 void deleteBook(sql::Connection* con) {
 	try {
@@ -455,3 +650,17 @@ void viewBook(sql::Connection* con) {
 		std::cerr << e.what() << endl;
 	}
 }
+
+void rentBook(sql::Connection* con) {
+	try {
+		int id;
+		cout << "Student ID: ";
+		cin >> id;
+
+		
+
+	}
+
+
+
+};

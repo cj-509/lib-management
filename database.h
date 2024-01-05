@@ -20,7 +20,7 @@ class database {
 		sql::Connection* getConnection();
 		~database();
 
-		void createDatabase(string& dbname);
+		void createSchema(const string& schemaName);
 		void useDatabase(string& dbname);
 		void updateDatabase(const string& tableNmame);
 		string createTable(const string& tableName, const string& fields);

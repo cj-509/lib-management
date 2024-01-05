@@ -83,13 +83,8 @@ class book {
 		string getGenre();
 		string getLanguage();
 		string getIsbn();
-		date getPublicationDate();
+		//date getPublicationDate();
 		int getNumPages();
-
-		void createBook();
-		void addBook();
-		void updateBook();
-		void issueTo(); //
 
 
 		//display book
@@ -113,7 +108,6 @@ class student{
 		string getHomeTown();
 		
 		char getAccountType();
-		//friend ostream& operator<<(ostream& ots, student& s);
 		
 
 };
